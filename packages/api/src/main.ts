@@ -7,6 +7,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.setGlobalPrefix('api')
 
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    methods: 'GET,PUT,POST,DELETE'
+  })
+
   const config = new DocumentBuilder()
     .setTitle('BP API')
     .setDescription(

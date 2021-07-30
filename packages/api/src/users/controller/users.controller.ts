@@ -20,8 +20,8 @@ export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
   @Get('test')
-  testHello(): string {
-    return 'HELLO FROM SERVER!!'
+  testHello(): { title: string } {
+    return { title: 'HELLO FROM SERVER!!' }
   }
 
   @UseGuards(JwtAuthGuard)
