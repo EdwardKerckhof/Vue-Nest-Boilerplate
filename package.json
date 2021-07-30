@@ -1,0 +1,18 @@
+{
+  "name": "vue-nest-boilerplate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "EdwardKerckhofZoneDev <edward@zonedev.be>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "start:api": "cd packages/api && npm run-script start:dev",
+    "start:app": "cd packages/app && npm run-script dev",
+    "start": "npm run start:api && npm run start:app"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "include": ["packages/*"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
@@ -18,6 +18,11 @@
     "noUnusedParameters": true,
     "noImplicitAny": true,
     "importHelpers": true,
-    "lib": ["ESNext", "dom"]
+    "lib": ["ESNext", "dom"],
+    "types": ["node", "vite-plugin-pages/client"],
+    "baseUrl": "/",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   }
 }

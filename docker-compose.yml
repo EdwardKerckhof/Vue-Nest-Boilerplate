@@ -4,15 +4,15 @@ services:
     # image: edwardkerckhof/nest-bp-api
     build:
       dockerfile: Dockerfile
-      context: ./packages/api
+      context: .
       # builds only up to development stage, this is done for hot reload
-      target: development
+      target: api
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
-      - ./packages/api:/usr/src/api
-    # run in dev mode: yarn start:dev
+      - ./packages/api:/usr/src/api/packages/api
+    # run in dev mode: yarn start:api
     # run in debug mode: yarn start:debug --> start vscode debugger first!
-    command: yarn start:dev
+    command: yarn start:api
     depends_on:
       - postgres
     environment:
@@ -22,26 +22,27 @@ services:
       NODE_ENV: development
       PORT: 3000
     ports:
-      - 3000:3000 # development port
-      - 9229:9229 # debugging port
+      - 3000:3000 # api development port
+      - 9229:9229 # api debugging port
 
   app:
     # image: edwardkerckhof/nest-bp-app
     build:
       dockerfile: Dockerfile
-      context: ./packages/app
+      context: .
       # builds only up to development stage, this is done for hot reload
-      target: development
+      target: app
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
-      - ./packages/app:/usr/src/app
-    # run in dev mode: yarn sdev
-    command: yarn dev
+      - ./packages/app:/usr/src/api/packages/app
+    # run in dev mode: yarn start:app
+    command: yarn start:app
+    depends_on:
+      - api
     environment:
-      NODE_ENV: development
       PORT: 4200
     ports:
-      - "4200:4200" # development port
+      - 4200:4200 # app development port
     links:
       - api
 

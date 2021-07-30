@@ -1,8 +1,8 @@
 {
-  "name": "nest-bp-api",
   "version": "0.0.1",
   "description": "Docker NestJS boilerplate api with user authentication and authorization",
   "author": "Edward Kerckhof",
+  "name": "@vnbp/api",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
