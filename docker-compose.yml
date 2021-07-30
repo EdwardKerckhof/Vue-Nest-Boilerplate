@@ -11,7 +11,7 @@ services:
     volumes:
       - ./packages/api:/usr/src/bp/packages/api
     working_dir: /usr/src/bp/packages/api
-    # run in dev mode: yarn start:api
+    # run in dev mode: yarn start:dev
     # run in debug mode: yarn start:debug --> start vscode debugger first!
     command: yarn start:dev
     depends_on:
@@ -36,7 +36,8 @@ services:
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
       - ./packages/app:/usr/src/bp/packages/app
-    working_dir: /usr/src/bp/packages/app # run in dev mode: yarn start:app
+    working_dir: /usr/src/bp/packages/app
+    # run in dev mode: yarn dev
     command: yarn dev
     depends_on:
       - api
