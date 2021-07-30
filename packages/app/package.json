@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full Vite, Vue and Typescript boilerplate. Uses: Vue Router 4 with dynamic pages plugin, Dynamic page titles, Automatic component import, ESLint, StyleLint, Prettier, Autoprefixer, PostCSS, TailwindCSS, Iconify and an automatic bundle compressor.",
+  "author": "Edward Kerckhof",
+  "name": "vue-vite-ts-boilerplate",
+  "scripts": {
+    "dev": "vite --host=0.0.0.0 --port 4200",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "lint": "eslint --ext .js,.ts,.vue src --ignore-path .gitignore ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EdwardKerckhofZoneDev/Vue-Vite-Ts-Boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EdwardKerckhofZoneDev/Vue-Vite-Ts-Boilerplate/issues"
+  },
+  "homepage": "https://github.com/EdwardKerckhofZoneDev/Vue-Vite-Ts-Boilerplate#readme",
+  "dependencies": {
+    "vue": "^3.1.4",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@iconify/json": "^1.1.380",
+    "@types/node": "^16.4.7",
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "@vitejs/plugin-vue": "^1.2.4",
+    "@vue/compiler-sfc": "^3.1.4",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "autoprefixer": "^10.2.6",
+    "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-vue": "^7.15.0",
+    "lint-staged": "^11.0.0",
+    "postcss": "^8.3.5",
+    "prettier": "^2.3.2",
+    "stylelint": "^13.13.1",
+    "stylelint-config-recommended": "^5.0.0",
+    "tailwindcss": "^2.2.4",
+    "typescript": "^4.3.5",
+    "vite": "^2.3.8",
+    "vite-plugin-banner": "^0.1.3",
+    "vite-plugin-components": "^0.12.0",
+    "vite-plugin-icons": "^0.6.3",
+    "vite-plugin-pages": "^0.14.8",
+    "vue-tsc": "^0.2.0"
+  }
+}

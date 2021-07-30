@@ -1,0 +1,28 @@
+{
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "importHelpers": true,
+    "lib": ["ESNext", "dom"],
+    "types": ["node", "vite-plugin-pages/client"],
+    "baseUrl": "/",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+import { ExtractJwt, Strategy } from 'passport-jwt'
+import { PassportStrategy } from '@nestjs/passport'
+import { Injectable } from '@nestjs/common'
+import { UserRequestDto } from '../../users/models/dto/users.dto'
+import { ConfigService } from '@nestjs/config'
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  // @ts-ignore
+  // tslint:disable-next-line:no-unused-variable
+  constructor(private readonly _configService: ConfigService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: _configService.get('JWT_SECRET')
+    })
+  }
+
+  async validate(payload: UserRequestDto) {
+    return { ...payload.user }
+  }
+}

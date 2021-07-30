@@ -1,0 +1,66 @@
+version: "3.8"
+services:
+  api:
+    # image: edwardkerckhof/nest-bp-api
+    build:
+      dockerfile: Dockerfile
+      context: ./packages/api
+      # builds only up to development stage, this is done for hot reload
+      target: development
+    # mount host directory to docker container, this is done to reflect file changes from host to container
+    volumes:
+      - ./packages/api:/usr/src/api
+    # run in dev mode: yarn start:dev
+    # run in debug mode: yarn start:debug --> start vscode debugger first!
+    command: yarn start:dev
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:5432/${DATABASE_NAME}
+      DATABASE_ADMIN_EMAIL: ${DATABASE_ADMIN_EMAIL}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: development
+      PORT: 3000
+    ports:
+      - 3000:3000 # development port
+      - 9229:9229 # debugging port
+
+  app:
+    # image: edwardkerckhof/nest-bp-app
+    build:
+      dockerfile: Dockerfile
+      context: ./packages/app
+      # builds only up to development stage, this is done for hot reload
+      target: development
+    # mount host directory to docker container, this is done to reflect file changes from host to container
+    volumes:
+      - ./packages/app:/usr/src/app
+    # run in dev mode: yarn sdev
+    command: yarn dev
+    environment:
+      NODE_ENV: development
+      PORT: 4200
+    ports:
+      - "4200:4200" # development port
+    links:
+      - api
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+      PORT: 5432
+    ports:
+      - 5432:5432
+
+  pg_admin:
+    image: dpage/pgadmin4:5
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${DATABASE_ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - 5050:80
