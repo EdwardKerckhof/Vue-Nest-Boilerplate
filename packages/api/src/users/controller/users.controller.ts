@@ -21,7 +21,7 @@ export class UsersController {
 
   @Get('test')
   testHello(): string {
-    return 'HELLO FROM SERVER'
+    return 'HELLO FROM SERVER!!'
   }
 
   @UseGuards(JwtAuthGuard)

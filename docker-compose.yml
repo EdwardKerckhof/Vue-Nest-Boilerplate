@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 services:
   api:
     # image: edwardkerckhof/nest-bp-api
@@ -9,10 +9,11 @@ services:
       target: api
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
-      - ./packages/api:/usr/src/api/packages/api
+      - ./packages/api:/usr/src/bp/packages/api
+    working_dir: /usr/src/bp/packages/api
     # run in dev mode: yarn start:api
     # run in debug mode: yarn start:debug --> start vscode debugger first!
-    command: yarn start:api
+    command: yarn start:dev
     depends_on:
       - postgres
     environment:
@@ -34,9 +35,9 @@ services:
       target: app
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
-      - ./packages/app:/usr/src/api/packages/app
-    # run in dev mode: yarn start:app
-    command: yarn start:app
+      - ./packages/app:/usr/src/bp/packages/app
+    working_dir: /usr/src/bp/packages/app # run in dev mode: yarn start:app
+    command: yarn dev
     depends_on:
       - api
     environment:
