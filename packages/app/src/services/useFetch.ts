@@ -1,5 +1,12 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { computed, reactive, ref } from 'vue'
+
+const apiClient: AxiosInstance = axios.create({
+  baseURL: 'http://localhost:3000/api',
+  headers: {
+    'Content-type': 'application/json'
+  }
+})
 
 interface IAxiosConfig {
   skip: boolean
@@ -16,7 +23,7 @@ export const useFetch = (url: string, config: IAxiosConfig) => {
     loading.value = true
 
     try {
-      const result = await axios.request({ url, ...config })
+      const result = await apiClient.request({ url, ...config })
       response.value = result
       data.value = result.data
     } catch (ex) {

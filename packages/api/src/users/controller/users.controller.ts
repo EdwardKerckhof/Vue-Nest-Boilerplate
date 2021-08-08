@@ -12,7 +12,7 @@ import {
   UserDto,
   UserResponseDto,
   ValidateUserDto
-} from '../models/dto/users.dto'
+} from '@vnbp/common'
 import { UsersService } from '../service/users.service'
 
 @Controller('users')

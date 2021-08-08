@@ -18,7 +18,7 @@ export default defineConfig({
       })
     }),
     Banner(
-      `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n * homepage: ${pkg.homepage}\n */`
+      `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n */`
     ),
     Icons(),
     Pages({
@@ -41,7 +41,7 @@ export default defineConfig({
         target: 'http://localhost:3000/api',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (p) => p.replace(/^\/api/, '')
       }
     }
   }

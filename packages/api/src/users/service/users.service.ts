@@ -1,15 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common'
-import { Repository } from 'typeorm'
-import { AuthService } from '../../auth/service/auth.service'
 import {
+  EXPIRE_TIME,
+  TOKEN_TYPE,
   CreateUserDto,
   UserDto,
   UserResponseDto,
   ValidateUserDto
-} from '../models/dto/users.dto'
-import { User } from '../models/entity/users.entity'
+} from '@vnbp/common'
+import { Repository } from 'typeorm'
+import { AuthService } from '../../auth/service/auth.service'
+import { User } from '../models/users.entity'
 
 @Injectable()
 export class UsersService {
