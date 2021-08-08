@@ -1,23 +1,15 @@
 {
   "version": "1.0.0",
-  "private": true,
   "description": "Full Vite, Vue and Typescript boilerplate. Uses: Vue Router 4 with dynamic pages plugin, Dynamic page titles, Automatic component import, ESLint, StyleLint, Prettier, Autoprefixer, PostCSS, TailwindCSS, Iconify and an automatic bundle compressor.",
   "author": "Edward Kerckhof",
   "name": "@vnbp/app",
+  "private": true,
   "scripts": {
     "dev": "vite --host=0.0.0.0 --port 4200",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.ts,.vue src --ignore-path .gitignore ."
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EdwardKerckhofZoneDev/Vue-Vite-Ts-Boilerplate.git"
-  },
-  "bugs": {
-    "url": "https://github.com/EdwardKerckhofZoneDev/Vue-Vite-Ts-Boilerplate/issues"
-  },
-  "homepage": "https://github.com/EdwardKerckhofZoneDev/Vue-Vite-Ts-Boilerplate#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "vue": "^3.1.4",

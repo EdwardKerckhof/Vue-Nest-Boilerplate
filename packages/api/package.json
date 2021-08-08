@@ -24,6 +24,7 @@
     "migration:run": "npm run build && npm run typeorm migration:run"
   },
   "dependencies": {
+    "@vnbp/common": "0.0.1",
     "@nestjs/common": "^8.0.5",
     "@nestjs/config": "^1.0.1",
     "@nestjs/core": "^8.0.5",

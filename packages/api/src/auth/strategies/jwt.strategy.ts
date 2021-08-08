@@ -6,9 +6,7 @@ import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  // @ts-ignore
-  // tslint:disable-next-line:no-unused-variable
-  constructor(private readonly _configService: ConfigService) {
+  constructor(readonly _configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,

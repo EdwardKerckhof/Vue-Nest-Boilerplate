@@ -1,3 +1,25 @@
+############
+## COMMON ##
+############
+# build node image for development
+FROM node:14 AS common
+
+# specify working directory
+WORKDIR /usr/src/bp
+
+# copy both package.json and .lock file
+COPY package.json ./
+COPY yarn.lock ./
+
+# copy both package.json and .lock file from all the packages
+COPY packages/common/package.json ./packages/common/
+
+# install dependencies
+RUN yarn install
+
+# copy all other files
+COPY . . 
+
 #########
 ## API ##
 #########
@@ -19,7 +41,7 @@ COPY packages/api/yarn.lock ./packages/api/
 RUN yarn install
 
 # copy all other files
-COPY . . 
+COPY --from=common /usr/src/bp .
 
 #########
 ## APP ##

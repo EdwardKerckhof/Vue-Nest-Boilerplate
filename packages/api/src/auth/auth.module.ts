@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
-import { EXPIRE_TIME } from '../common/constants'
+import { EXPIRE_TIME } from '@vnbp/common'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AuthService } from './service/auth.service'
 import { JwtStrategy } from './strategies/jwt.strategy'

@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+  common:
+    # image: edwardkerckhof/nest-bp-common
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: common
+    # mount host directory to docker container, this is done to reflect file changes from host to container
+    volumes:
+      - ./packages/common:/usr/src/bp/packages/common
+    working_dir: /usr/src/bp/packages/common
+    command: yarn build
+
   api:
     # image: edwardkerckhof/nest-bp-api
     build:

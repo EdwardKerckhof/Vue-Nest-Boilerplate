@@ -1,9 +1,5 @@
 {
-  "include": ["packages/*"],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
     "declaration": true,
@@ -17,7 +13,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitAny": true,
-    "importHelpers": true,
-    "lib": ["ESNext", "dom"]
+    "importHelpers": true
   }
 }

@@ -13,6 +13,9 @@
   "scripts": {
     "start:api": "cd packages/api && npm run-script start:dev",
     "start:app": "cd packages/app && npm run-script dev",
-    "start": "npm run start:api && npm run start:app"
+    "start": "npm run start:api && npm run start:app",
+    "lint:api": "cd packages/api && npm run-script lint",
+    "lint:app": "cd packages/app && npm run-script lint",
+    "lint": "npm run lint:api && npm run lint:app"
   }
 }
