@@ -16,6 +16,10 @@
     "start": "npm run start:api && npm run start:app",
     "lint:api": "cd packages/api && npm run-script lint",
     "lint:app": "cd packages/app && npm run-script lint",
-    "lint": "npm run lint:api && npm run lint:app"
+    "lint": "npm run lint:api && npm run lint:app",
+    "build": "lerna run build"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
   }
 }

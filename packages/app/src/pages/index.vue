@@ -20,13 +20,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import { useFetchCache } from '@/services/useFetch'
+import { useFetchCache } from '../services/useFetch'
 
-const { data } = useFetchCache(
-  'test',
-  'http://localhost:3000/api/users/test',
-  {}
-)
+const { data } = useFetchCache('test', 'http://localhost:3000/api/users/test', {
+  skip: false,
+  config: {}
+})
 
 const counter = ref(0)
 </script>
