@@ -1,8 +1,8 @@
-
-################
-## PRODUCTION ##
-################
-FROM node:14
+############
+## COMMON ##
+############
+# build node image for development
+FROM node:14 AS common
 
 # specify working directory
 WORKDIR /usr/src/bp
@@ -22,21 +22,33 @@ COPY packages/common/package.json ./packages/common/
 RUN yarn install
 
 # copy all other files
+COPY . .
+
+#########
+## API ##
+#########
+# build node image for development
+FROM node:14 AS api
+
+# specify working directory
+WORKDIR /usr/src/bp
+
+# copy all other files
 COPY packages/api/dist ./packages/api/dist
 COPY packages/app/dist ./packages/app/dist
 COPY packages/common/dist ./packages/common/dist
 
-# set node env to production
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+# copy all other files
+COPY --from=common /usr/src/bp .
 
-# set other needed environment variables
-ENV DATABASE_URL=${DATABASE_URL}
-ENV DATABASE_ADMIN_EMAIL=${DATABASE_ADMIN_EMAIL}
-ENV JWT_SECRET=${JWT_SECRET}
+#########
+## APP ##
+#########
+# build node image for development
+FROM node:14 AS app
 
-# expose ports that api and app use
-EXPOSE 3000
-EXPOSE 4200
+# specify working directory
+WORKDIR /usr/src/bp
 
-CMD ["npm", "start"]
+# copy all other files
+COPY --from=api /usr/src/bp .

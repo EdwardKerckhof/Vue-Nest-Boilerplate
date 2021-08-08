@@ -34,8 +34,17 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Build dependencies
-/coverage
+# Versioning and metadata
+.git
+.gitignore
+.dockerignore
 
 # Environment (contains sensitive data)
 .env
+
+# Files not required for production
+.editorconfig
+Dockerfile
+README.md
+tslint.json
+nodemon.json

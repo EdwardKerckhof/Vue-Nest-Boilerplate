@@ -6,7 +6,7 @@
   "private": true,
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch"

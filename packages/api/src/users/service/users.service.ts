@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { AuthService } from '../../auth/service/auth.service'
-import { EXPIRE_TIME, TOKEN_TYPE } from '../../common/constants'
+import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common'
 import { Repository } from 'typeorm'
+import { AuthService } from '../../auth/service/auth.service'
 import {
   CreateUserDto,
   UserDto,

@@ -3,7 +3,7 @@ services:
   common:
     # image: edwardkerckhof/nest-bp-common
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: .
       target: common
     # mount host directory to docker container, this is done to reflect file changes from host to container
@@ -15,7 +15,7 @@ services:
   api:
     # image: edwardkerckhof/nest-bp-api
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: .
       # builds only up to development stage, this is done for hot reload
       target: api
@@ -41,7 +41,7 @@ services:
   app:
     # image: edwardkerckhof/nest-bp-app
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: .
       # builds only up to development stage, this is done for hot reload
       target: app
