@@ -1,8 +1,12 @@
 <template>
-  <form @submit.prevent="$emit('submit')">
+  <form @submit.prevent="handleSubmit">
     <div v-for="(field, i) in fields" :key="i">
-      <FormInput v-if="field.type !== 'group'" :field="field" />
-      <FormGroup v-else :field="field" />
+      <FormInput
+        v-if="field.type !== 'group'"
+        :field="field"
+        @input="handleInput"
+      />
+      <FormGroup v-else :field="field" @input="handleInput" />
     </div>
 
     <div class="form-actions">
@@ -12,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, provide } from 'vue'
 
 import { IFormInput } from '../../../@types/IFormInput'
 import FormGroup from '../../common/form/FormGroup.vue'
@@ -28,6 +32,19 @@ export default defineComponent({
       default: () => []
     }
   },
-  emits: ['submit']
+  emits: ['submit', 'handleInput', 'handleGroupInput'],
+  setup(_, { emit }) {
+    provide('formValues', [])
+
+    const handleSubmit = (e) => {
+      emit('submit')
+    }
+
+    const handleInput = ({ value, field, valIndex }) => {
+      emit('handleInput', { value, field, valIndex })
+    }
+
+    return { handleSubmit, handleInput }
+  }
 })
 </script>

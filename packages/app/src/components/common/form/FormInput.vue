@@ -1,9 +1,11 @@
 <template>
-  <label class="form-label">{{ field.labels[0] }}</label>
+  <label v-if="field.labels[0]" class="form-label">{{ field.labels[0] }}</label>
   <input
+    :value="field.values[0]"
     :type="field.type"
     :placeholder="field.placeholders[0]"
     class="form-input"
+    @input="$emit('input', { value: $event.target.value, field, valIndex: 0 })"
   />
 </template>
 
@@ -19,6 +21,7 @@ export default defineComponent({
       type: Object as PropType<IFormInput>,
       required: true
     }
-  }
+  },
+  emits: ['input']
 })
 </script>
