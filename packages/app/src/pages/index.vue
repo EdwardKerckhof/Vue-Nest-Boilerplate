@@ -5,30 +5,30 @@
   <button @click="counter++">Increment</button>
 
   <icon-ic-round-shopping-cart style="font-size: 2em; color: red" />
-
-  <div v-if="data.error">
-    <ul>
-      <li v-for="(errorMsg, i) in data.message" :key="i" style="color: red">
-        {{ errorMsg }}
-      </li>
-    </ul>
-  </div>
 </template>
 
-<script lang="ts" setup>
-import { ErrorResponseDto, UserResponseDto } from '@vnbp/common/dist/models'
-import { onBeforeMount, ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 
-import AuthService from '../services/auth/auth.service'
+import Hello from '../components/Hello.vue'
+// import AuthService from '../services/auth/auth.service'
 
-const authService = new AuthService()
+export default defineComponent({
+  name: 'Home',
+  components: { Hello },
+  setup() {
+    // const authService = new AuthService()
 
-const counter = ref(0)
+    const counter = ref(0)
 
-const data = ref<UserResponseDto | ErrorResponseDto>(undefined)
+    // const data = ref<UserResponseDto | ErrorResponseDto>(undefined)
 
-onBeforeMount(async () => {
-  const res = await authService.login()
-  data.value = res
+    // onBeforeMount(async () => {
+    //   const res = await authService.login()
+    //   data.value = res
+    // })
+
+    return { counter }
+  }
 })
 </script>

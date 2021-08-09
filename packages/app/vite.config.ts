@@ -2,8 +2,7 @@ import Vue from '@vitejs/plugin-vue'
 import path from 'path'
 import { defineConfig } from 'vite'
 import Banner from 'vite-plugin-banner'
-import ViteComponents from 'vite-plugin-components'
-import Icons, { ViteIconsResolver } from 'vite-plugin-icons'
+import Icons from 'vite-plugin-icons'
 import Pages from 'vite-plugin-pages'
 
 import pkg from './package.json'
@@ -12,11 +11,6 @@ import pkg from './package.json'
 export default defineConfig({
   plugins: [
     Vue(),
-    ViteComponents({
-      customComponentResolvers: ViteIconsResolver({
-        componentPrefix: 'icon'
-      })
-    }),
     Banner(
       `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n */`
     ),
