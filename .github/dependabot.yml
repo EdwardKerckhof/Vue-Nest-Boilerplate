@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase
+  - package-ecosystem: "npm"
+    directory: "/packages/api"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase
+  - package-ecosystem: "npm"
+    directory: "/packages/app"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase
+  - package-ecosystem: "npm"
+    directory: "/packages/common"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase

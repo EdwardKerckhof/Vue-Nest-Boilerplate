@@ -10,7 +10,7 @@ services:
     volumes:
       - ./packages/common:/usr/src/bp/packages/common
     working_dir: /usr/src/bp/packages/common
-    command: yarn build
+    command: yarn build:watch
 
   api:
     # image: edwardkerckhof/nest-bp-api
