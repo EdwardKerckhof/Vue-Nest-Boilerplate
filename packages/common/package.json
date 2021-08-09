@@ -1,5 +1,5 @@
 {
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Shared functions/constants between API and APP",
   "author": "Edward Kerckhof",
   "name": "@vnbp/common",
