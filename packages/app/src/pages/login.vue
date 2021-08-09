@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import LoginForm from '../components/auth/LoginForm.vue'
+import LoginForm from '../components/auth/login/LoginForm.vue'
 
 export default defineComponent({
   name: 'Login',

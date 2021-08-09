@@ -1,5 +1,14 @@
 <template>
-  <h1>Register</h1>
+  <RegisterForm />
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+import RegisterForm from '../components/auth/register/RegisterForm.vue'
+
+export default defineComponent({
+  name: 'Register',
+  components: { RegisterForm }
+})
+</script>

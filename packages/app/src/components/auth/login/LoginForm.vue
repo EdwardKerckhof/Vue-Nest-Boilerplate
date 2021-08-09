@@ -2,7 +2,7 @@
   <pre>{{ loginData }}</pre>
   <FormLoader v-if="loading" />
 
-  <FormErrors v-if="loginData?.statusCode" :login-data="loginData" />
+  <FormErrors v-if="loginData?.statusCode" :data="loginData" />
 
   <Form @submit="handleSubmit">
     <button type="submit">Login</button>
@@ -13,11 +13,11 @@
 import { ErrorResponseDto, UserResponseDto } from '@vnbp/common/dist/models'
 import { defineComponent, provide, ref } from 'vue'
 
-import Form from '../../components/common/form/Form.vue'
-import FormErrors from '../../components/common/form/FormErrors.vue'
-import FormLoader from '../../components/common/form/FormLoader.vue'
-import AuthService from '../../services/auth/auth.service'
-import { loginFormFields } from './loginFormFields'
+import AuthService from '../../../services/auth/auth.service'
+import Form from '../../common/form/Form.vue'
+import FormErrors from '../../common/form/FormErrors.vue'
+import FormLoader from '../../common/form/FormLoader.vue'
+import { loginFormFields } from '../login/loginFormFields'
 
 export default defineComponent({
   name: 'LoginForm',
@@ -43,10 +43,6 @@ export default defineComponent({
           case 'password': {
             password = field.values[0]
             break
-          }
-          default: {
-            email = ''
-            password = ''
           }
         }
       })

@@ -1,4 +1,5 @@
 import {
+  CreateUserDto,
   ErrorResponseDto,
   UserResponseDto,
   ValidateUserDto
@@ -12,6 +13,18 @@ export default class AuthService {
   ): Promise<UserResponseDto | ErrorResponseDto> {
     try {
       const { data } = await apiClient.post('/users/signin', validateUser)
+
+      return data as UserResponseDto
+    } catch ({ response: { data } }) {
+      return data as ErrorResponseDto
+    }
+  }
+
+  async register(
+    createUser: CreateUserDto
+  ): Promise<UserResponseDto | ErrorResponseDto> {
+    try {
+      const { data } = await apiClient.post('/users', createUser)
 
       return data as UserResponseDto
     } catch ({ response: { data } }) {

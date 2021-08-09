@@ -1,13 +1,13 @@
 <template>
-  <ul v-if="typeof loginData?.message !== 'string'">
-    <li v-for="(errorMsg, i) in loginData?.message" :key="i">
+  <ul v-if="typeof data?.message !== 'string'">
+    <li v-for="(errorMsg, i) in data?.message" :key="i">
       <p class="text-red-500">{{ $filters.capitalize(errorMsg) }}</p>
     </li>
   </ul>
   <ul v-else>
     <li>
       <p class="text-red-500">
-        {{ $filters.capitalize(loginData?.message) }}
+        {{ $filters.capitalize(data?.message) }}
       </p>
     </li>
   </ul>
@@ -20,7 +20,7 @@ import { defineComponent, PropType } from 'vue'
 export default defineComponent({
   name: 'FormErrors',
   props: {
-    loginData: {
+    data: {
       type: Object as PropType<UserResponseDto | ErrorResponseDto>,
       required: true
     }

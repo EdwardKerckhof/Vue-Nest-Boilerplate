@@ -31,17 +31,14 @@ export class ValidateUserDto {
   @IsEmail()
   email!: string
 
-  @IsString()
   @IsNotEmpty()
   password!: string
 }
 
 export class CreateUserDto extends ValidateUserDto {
-  @IsString()
   @IsNotEmpty()
   firstName!: string
 
-  @IsString()
   @IsNotEmpty()
   lastName!: string
 }

@@ -1,4 +1,4 @@
-import { IFormInput } from '../../@types/IFormInput'
+import { IFormInput } from '../../../@types/IFormInput'
 
 export const loginFormFields: IFormInput[] = [
   {
