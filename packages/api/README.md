@@ -28,7 +28,8 @@
 
 ## TODO
 
-- Improve Swagger documentation
+- [ ] Improve Swagger documentation
+- [ ] Generate cookie with JWT
 
 ## Installation
 
