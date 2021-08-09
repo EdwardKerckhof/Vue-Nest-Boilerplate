@@ -1,3 +1,4 @@
+import { UserDto } from '@vnbp/common/dist/models'
 import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
 
 @Entity()
@@ -15,7 +16,6 @@ export class User {
   email!: string
 
   // exclude password by default
-  // exclude password by default
   @Column({ select: false })
   password!: string
 
@@ -24,7 +24,7 @@ export class User {
     this.email = this.email.toLowerCase()
   }
 
-  toDTO = () => {
+  toDTO = (): UserDto => {
     return {
       id: this.id,
       firstName: this.firstName,

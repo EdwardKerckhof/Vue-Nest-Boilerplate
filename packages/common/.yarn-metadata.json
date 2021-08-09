@@ -1,0 +1,33 @@
+{
+  "manifest": {
+    "version": "0.0.1",
+    "description": "Shared functions/constants between API and APP",
+    "author": {
+      "name": "Edward Kerckhof"
+    },
+    "name": "@vnbp/common",
+    "private": true,
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "license": "UNLICENSED",
+    "scripts": {
+      "build": "tsc",
+      "build:watch": "tsc --watch"
+    },
+    "devDependencies": {
+      "@types/node": "^16.4.13",
+      "typescript": "^4.3.5"
+    },
+    "_registry": "npm",
+    "_loc": "/home/edward/.cache/yarn/v6/npm-@vnbp-common-0.0.1-c9f49d5a-67b1-42ff-8888-483da9cd3178-1628506607904/node_modules/@vnbp/common/package.json"
+  },
+  "artifacts": [],
+  "remote": {
+    "type": "copy",
+    "registry": "npm",
+    "hash": "c9f49d5a-67b1-42ff-8888-483da9cd3178-1628506607904",
+    "reference": "/usr/src/bp/packages/common"
+  },
+  "registry": "npm",
+  "hash": "c9f49d5a-67b1-42ff-8888-483da9cd3178-1628506607904"
+}

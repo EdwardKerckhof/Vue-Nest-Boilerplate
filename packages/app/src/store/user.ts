@@ -1,4 +1,4 @@
-import { UserDto } from '@vnbp/common'
+import { UserDto } from '@vnbp/common/dist/models'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore({

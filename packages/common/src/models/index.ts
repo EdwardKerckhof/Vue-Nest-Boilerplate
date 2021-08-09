@@ -1,14 +1,14 @@
-export const EXPIRE_TIME: number = 7200 // 2 hrs
-export const TOKEN_TYPE: string = 'JWT'
-
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
 
 export class UserDto {
-  id!: number
-  firstName!: string
-  lastName!: string
-  email!: string
-  password?: string
+  protected password?: string
+
+  constructor(
+    public id: number,
+    public firstName: string,
+    public lastName: string,
+    public email: string
+  ) {}
 }
 
 export class UserResponseDto {
