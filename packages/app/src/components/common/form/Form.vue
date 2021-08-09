@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="handleSubmit">
-    <div v-for="(field, i) in fields" :key="i">
+    <div v-for="(field, i) in formFields" :key="i">
       <FormInput
         v-if="field.type !== 'group'"
         :field="field"
@@ -16,35 +16,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, provide } from 'vue'
+import { defineComponent, inject } from 'vue'
 
-import { IFormInput } from '../../../@types/IFormInput'
 import FormGroup from '../../common/form/FormGroup.vue'
 import FormInput from '../../common/form/FormInput.vue'
 
 export default defineComponent({
   name: 'Form',
   components: { FormGroup, FormInput },
-  props: {
-    fields: {
-      type: Array as PropType<Array<IFormInput>>,
-      required: true,
-      default: () => []
-    }
-  },
-  emits: ['submit', 'handleInput', 'handleGroupInput'],
+  emits: ['submit'],
   setup(_, { emit }) {
-    provide('formValues', [])
+    const formFields = inject('formFields')
 
-    const handleSubmit = (e) => {
+    const handleSubmit = () => {
       emit('submit')
     }
 
     const handleInput = ({ value, field, valIndex }) => {
-      emit('handleInput', { value, field, valIndex })
+      const index = formFields.findIndex((f) => f.id === field.id)
+      if (index > -1) formFields[index].values[valIndex] = value
     }
 
-    return { handleSubmit, handleInput }
+    return { handleSubmit, handleInput, formFields }
   }
 })
 </script>

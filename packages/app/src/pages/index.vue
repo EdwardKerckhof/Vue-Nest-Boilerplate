@@ -11,7 +11,6 @@
 import { defineComponent, ref } from 'vue'
 
 import Hello from '../components/Hello.vue'
-// import AuthService from '../services/auth/auth.service'
 
 export default defineComponent({
   name: 'Home',

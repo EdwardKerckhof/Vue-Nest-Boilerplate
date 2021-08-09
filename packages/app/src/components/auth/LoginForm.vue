@@ -1,68 +1,61 @@
 <template>
-  <h1>LoginForm</h1>
-  <Form :fields="formFields" @submit="handleSubmit" @handleInput="handleInput">
+  <pre>{{ loginData }}</pre>
+  <FormLoader v-if="loading" />
+
+  <FormErrors v-if="loginData?.statusCode" :login-data="loginData" />
+
+  <Form @submit="handleSubmit">
     <button type="submit">Login</button>
-    <p>or</p>
-    <Link :to="{ name: 'register' }">Register</Link>
   </Form>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ErrorResponseDto, UserResponseDto } from '@vnbp/common/dist/models'
+import { defineComponent, provide, ref } from 'vue'
 
-import { IFormInput } from '../../@types/IFormInput'
 import Form from '../../components/common/form/Form.vue'
-import Link from '../../components/common/nav/Link.vue'
+import FormErrors from '../../components/common/form/FormErrors.vue'
+import FormLoader from '../../components/common/form/FormLoader.vue'
+import AuthService from '../../services/auth/auth.service'
+import { loginFormFields } from './loginFormFields'
 
 export default defineComponent({
   name: 'LoginForm',
-  components: { Form, Link },
+  components: { Form, FormErrors, FormLoader },
   setup() {
-    const formFields: IFormInput[] = [
-      {
-        id: 0,
-        type: 'email',
-        required: true,
-        inputs: [],
-        values: [''],
-        labels: ['Email'],
-        placeholders: [],
-        validators: ['required', 'email']
-      },
-      {
-        id: 1,
-        type: 'password',
-        required: true,
-        inputs: [],
-        values: [''],
-        labels: ['Password'],
-        placeholders: [],
-        validators: ['required']
-      },
-      {
-        id: 2,
-        type: 'group',
-        required: true,
-        inputs: ['text', 'text'],
-        labels: ['Full name'],
-        values: ['', ''],
-        placeholders: ['first name', 'last name'],
-        validators: ['required']
-      }
-    ]
+    const authService = new AuthService()
 
-    const handleSubmit = () => {
-      console.log('submitted')
-      console.log('test', formFields[0].values)
-      console.log('test', formFields[2].values)
+    const loginData = ref<UserResponseDto | ErrorResponseDto>(undefined)
+    const loading = ref(false)
+
+    provide('formFields', loginFormFields)
+
+    const handleSubmit = async () => {
+      loading.value = true
+      let email = ''
+      let password = ''
+      loginFormFields.forEach((field) => {
+        switch (field.name) {
+          case 'email': {
+            email = field.values[0]
+            break
+          }
+          case 'password': {
+            password = field.values[0]
+            break
+          }
+          default: {
+            email = ''
+            password = ''
+          }
+        }
+      })
+
+      loginData.value = await authService.login({ email, password })
+      loading.value = false
     }
 
-    const handleInput = ({ value, field, valIndex }) => {
-      const index = formFields.findIndex((f) => f.id === field.id)
-      if (index > -1) formFields[index].values[valIndex] = value
-    }
-
-    return { formFields, handleSubmit, handleInput }
+    return { handleSubmit, loginData, loading }
   }
 })
 </script>
