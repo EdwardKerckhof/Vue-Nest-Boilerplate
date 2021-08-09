@@ -18,21 +18,28 @@
 <script lang="ts">
 import { defineComponent, inject } from 'vue'
 
+import { IFormInput } from '../../../@types/IFormInput'
 import FormGroup from '../../common/form/FormGroup.vue'
 import FormInput from '../../common/form/FormInput.vue'
+
+interface InputHandle {
+  value: string
+  field: IFormInput
+  valIndex: number
+}
 
 export default defineComponent({
   name: 'Form',
   components: { FormGroup, FormInput },
   emits: ['submit'],
   setup(_, { emit }) {
-    const formFields = inject('formFields')
+    const formFields: IFormInput[] = inject('formFields')!
 
     const handleSubmit = () => {
       emit('submit')
     }
 
-    const handleInput = ({ value, field, valIndex }) => {
+    const handleInput = ({ value, field, valIndex }: InputHandle) => {
       const index = formFields.findIndex((f) => f.id === field.id)
       if (index > -1) formFields[index].values[valIndex] = value
     }

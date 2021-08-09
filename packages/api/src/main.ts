@@ -2,14 +2,18 @@ import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { AppModule } from './app/app.module'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.setGlobalPrefix('api')
 
+  app.use(cookieParser())
+
   app.enableCors({
-    origin: 'http://localhost:4200',
-    methods: 'GET,PUT,POST,DELETE'
+    origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+    methods: 'GET,PUT,POST,DELETE',
+    credentials: true
   })
 
   const config = new DocumentBuilder()

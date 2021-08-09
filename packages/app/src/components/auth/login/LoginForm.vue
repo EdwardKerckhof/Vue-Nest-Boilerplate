@@ -25,7 +25,9 @@ export default defineComponent({
   setup() {
     const authService = new AuthService()
 
-    const loginData = ref<UserResponseDto | ErrorResponseDto>(undefined)
+    const loginData = ref<UserResponseDto | ErrorResponseDto | undefined>(
+      undefined
+    )
     const loading = ref(false)
 
     provide('formFields', loginFormFields)

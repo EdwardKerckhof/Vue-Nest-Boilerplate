@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
+import { IsEmail, IsNotEmpty } from 'class-validator'
 
 export class UserDto {
   protected password?: string
@@ -11,10 +11,14 @@ export class UserDto {
   ) {}
 }
 
-export class UserResponseDto {
+export class UserResponse {
   accessToken!: string
   tokenType!: string
   expiresIn!: number
+}
+
+export class UserResponseDto {
+  success!: boolean
 }
 
 export class ErrorResponseDto {

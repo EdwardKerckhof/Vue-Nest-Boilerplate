@@ -4,7 +4,9 @@ import {
   Get,
   Post,
   HttpCode,
-  UseGuards
+  UseGuards,
+  Res,
+  Req
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import {
@@ -14,6 +16,7 @@ import {
   ValidateUserDto
 } from '@vnbp/common/dist/models'
 import { UsersService } from '../service/users.service'
+import { Request, Response } from 'express'
 
 @Controller('users')
 export class UsersController {
@@ -31,13 +34,44 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() createDto: CreateUserDto): Promise<UserResponseDto> {
-    return this._usersService.create(createDto)
+  async create(
+    @Body() createDto: CreateUserDto,
+    @Res({ passthrough: true }) res: Response
+  ): Promise<UserResponseDto> {
+    const data = await this._usersService.create(createDto)
+    res.cookie(process.env.COOKIE_NAME || 'bp_jwt_fb', data.accessToken, {
+      httpOnly: true
+    })
+    return { success: true }
   }
 
   @Post('signin')
   @HttpCode(200)
-  signIn(@Body() validateDto: ValidateUserDto): Promise<UserResponseDto> {
-    return this._usersService.signIn(validateDto)
+  async signIn(
+    @Body() validateDto: ValidateUserDto,
+    @Res({ passthrough: true }) res: Response
+  ): Promise<UserResponseDto> {
+    const data = await this._usersService.signIn(validateDto)
+    res.cookie(process.env.COOKIE_NAME || 'bp_jwt', data.accessToken, {
+      httpOnly: true
+    })
+    return { success: true }
+  }
+
+  @Post('logout')
+  async logout(
+    @Res({ passthrough: true }) res: Response
+  ): Promise<{ success: boolean }> {
+    res.clearCookie(process.env.COOKIE_NAME || 'bp_jwt')
+
+    return {
+      success: true
+    }
+  }
+
+  @Get('user')
+  getSignedInUser(@Req() req: Request): Promise<UserDto> {
+    const cookie = req.cookies[process.env.COOKIE_NAME || 'bp_jwt']
+    return this._usersService.verifyJwt(cookie)
   }
 }

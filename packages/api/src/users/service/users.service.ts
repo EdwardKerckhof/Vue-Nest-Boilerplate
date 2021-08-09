@@ -4,7 +4,7 @@ import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import {
   CreateUserDto,
   UserDto,
-  UserResponseDto,
+  UserResponse,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
 import { Repository } from 'typeorm'
@@ -43,7 +43,7 @@ export class UsersService {
     }
   }
 
-  async create(createDto: CreateUserDto): Promise<UserResponseDto> {
+  async create(createDto: CreateUserDto): Promise<UserResponse> {
     try {
       const mailExists = await this.mailExists(createDto.email)
       if (mailExists)
@@ -68,7 +68,7 @@ export class UsersService {
     }
   }
 
-  async signIn(validateDto: ValidateUserDto): Promise<UserResponseDto> {
+  async signIn(validateDto: ValidateUserDto): Promise<UserResponse> {
     const user = await this.findUserByEmail(validateDto.email)
 
     try {
@@ -121,5 +121,24 @@ export class UsersService {
 
   private async generateJwt(user: UserDto): Promise<string> {
     return this._authService.generateJwt(user)
+  }
+
+  async verifyJwt(token: string): Promise<UserDto> {
+    try {
+      const data = await this._authService.verifyJwt(token)
+
+      if (!data)
+        throw new HttpException(
+          `unable to verify JWT cookie`,
+          HttpStatus.UNAUTHORIZED
+        )
+
+      return await this.findOneById(data.id)
+    } catch (error) {
+      throw new HttpException(
+        `unable to verify JWT cookie`,
+        HttpStatus.UNAUTHORIZED
+      )
+    }
   }
 }

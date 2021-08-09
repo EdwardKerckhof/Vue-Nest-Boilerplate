@@ -25,7 +25,9 @@ export default defineComponent({
   setup() {
     const authService = new AuthService()
 
-    const registerData = ref<UserResponseDto | ErrorResponseDto>(undefined)
+    const registerData = ref<UserResponseDto | ErrorResponseDto | undefined>(
+      undefined
+    )
     const loading = ref(false)
 
     provide('formFields', registerFormFields)
@@ -49,7 +51,11 @@ export default defineComponent({
     }
 
     const extractFormFields = () => {
-      let email, password, repeatPassword, firstname, lastname
+      let email: string = '',
+        password: string = '',
+        repeatPassword: string = '',
+        firstname: string = '',
+        lastname: string = ''
 
       registerFormFields.forEach((field) => {
         switch (field.name) {

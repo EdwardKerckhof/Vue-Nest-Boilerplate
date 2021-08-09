@@ -15,13 +15,13 @@
 
 <script lang="ts">
 import { ErrorResponseDto, UserResponseDto } from '@vnbp/common/dist/models'
-import { defineComponent, PropType } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'FormErrors',
   props: {
     data: {
-      type: Object as PropType<UserResponseDto | ErrorResponseDto>,
+      type: [UserResponseDto, ErrorResponseDto],
       required: true
     }
   }

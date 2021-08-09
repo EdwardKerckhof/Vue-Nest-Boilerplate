@@ -3,9 +3,9 @@ export interface IFormInput {
   type: string
   name: string
   required: boolean
-  values?: string[]
+  values: string[]
   placeholders: string[]
   validators: string[]
   labels: string[]
-  inputs?: string[]
+  inputs: string[]
 }

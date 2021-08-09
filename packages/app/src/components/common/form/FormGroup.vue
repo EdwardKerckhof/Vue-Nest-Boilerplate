@@ -9,7 +9,7 @@
       :placeholder="field.placeholders[j]"
       class="form-input"
       @input="
-        $emit('input', { value: $event.target.value, field, valIndex: j })
+        $emit('input', { value: $event?.target.value, field, valIndex: j })
       "
     />
   </div>
