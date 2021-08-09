@@ -26,6 +26,10 @@
 
 [Nest](https://github.com/nestjs/nest) Docker NestJS boilerplate api with user authentication and authorization
 
+## TODO
+
+- Improve Swagger documentation
+
 ## Installation
 
 ```bash

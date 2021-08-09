@@ -1,17 +1,22 @@
 # Vue 3 + Typescript + Vite
 
-Full Vite, Vue and Typescript boilerplate. 
-Uses: 
- - Vue Router 4 with dynamic pages plugin
- - Dynamic page titles, Automatic component import
- - ESLint
- - StyleLint
- - Prettier
- - Autoprefixer
- - PostCSS
- - TailwindCSS
- - Iconify 
- - Automatic bundle compressor
+Full Vite, Vue and Typescript boilerplate.
+Uses:
+
+- Vue Router 4 with dynamic pages plugin
+- Dynamic page titles, Automatic component import
+- ESLint
+- StyleLint
+- Prettier
+- Autoprefixer
+- PostCSS
+- TailwindCSS
+- Iconify
+- Automatic bundle compressor
+
+## TODO
+
+- Add login/register pages
 
 ## Recommended IDE Setup
 

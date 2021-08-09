@@ -21,7 +21,7 @@ export class UsersController {
 
   @Get('test')
   testHello(): { title: string } {
-    return { title: 'HELLO FROM SERVER!!' }
+    return { title: 'HELLO FROM SERVER!' }
   }
 
   @UseGuards(JwtAuthGuard)

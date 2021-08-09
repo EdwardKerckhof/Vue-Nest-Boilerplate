@@ -11,10 +11,10 @@
     "lint": "eslint --ext .js,.ts,.vue src --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@vnbp/common": "/usr/src/bp/packages/common/",
+    "@vnbp/common": "/usr/src/bp/packages/common",
     "axios": "^0.21.1",
-    "pinia": "^2.0.0-beta.5",
-    "vue": "^3.1.4",
+    "pinia": "^2.0.0-rc.3",
+    "vue": "^3.2.0-0",
     "vue-router": "4"
   },
   "devDependencies": {
@@ -23,7 +23,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "@vitejs/plugin-vue": "^1.2.4",
-    "@vue/compiler-sfc": "^3.1.4",
+    "@vue/compiler-sfc": "^3.2.0-0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "autoprefixer": "^10.2.6",
     "eslint": "^7.31.0",

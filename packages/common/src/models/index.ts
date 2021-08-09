@@ -17,6 +17,12 @@ export class UserResponseDto {
   expiresIn!: number
 }
 
+export class ErrorResponseDto {
+  statusCode!: number
+  message!: string | string[]
+  error?: string
+}
+
 export class UserRequestDto {
   user!: UserDto
 }

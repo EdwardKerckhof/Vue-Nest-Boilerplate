@@ -5,29 +5,30 @@
   <button @click="counter++">Increment</button>
 
   <icon-ic-round-shopping-cart style="font-size: 2em; color: red" />
-  <Suspense>
-    <template #default>
-      <div>
-        <pre>{{ data }}</pre>
-      </div>
-    </template>
-    <template #fallback>
-      <h1>Loading...</h1>
-    </template>
-  </Suspense>
+
+  <div v-if="data.error">
+    <ul>
+      <li v-for="(errorMsg, i) in data.message" :key="i" style="color: red">
+        {{ errorMsg }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ErrorResponseDto, UserResponseDto } from '@vnbp/common/dist/models'
+import { onBeforeMount, ref } from 'vue'
 
-import { useFetchCache } from '../services/useFetch'
+import AuthService from '../services/auth/auth.service'
 
-const { data } = useFetchCache('test', '/users/test', {
-  skip: true,
-  config: {}
-})
-
-console.log(data)
+const authService = new AuthService()
 
 const counter = ref(0)
+
+const data = ref<UserResponseDto | ErrorResponseDto>(undefined)
+
+onBeforeMount(async () => {
+  const res = await authService.login()
+  data.value = res
+})
 </script>
