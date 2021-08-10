@@ -18,8 +18,8 @@ export class User {
   @Column({ nullable: true, select: false })
   refreshToken?: string
 
-  @Column({ nullable: true, select: false })
-  refreshTokenExp?: Date
+  @Column({ nullable: true, type: 'date' })
+  refreshTokenExp?: string
 
   // exclude password by default
   @Column({ select: false })
@@ -35,7 +35,8 @@ export class User {
       id: this.id,
       firstName: this.firstName,
       lastName: this.lastName,
-      email: this.email.toLowerCase()
+      email: this.email.toLowerCase(),
+      refreshTokenExp: this.refreshTokenExp || ''
     }
   }
 }

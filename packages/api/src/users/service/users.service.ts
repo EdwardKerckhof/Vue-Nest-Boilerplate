@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import {
-  CreateUserDto,
+  RegisterUserDto,
   UserDto,
   UserResponse,
   ValidateUserDto
@@ -20,50 +20,26 @@ export class UsersService {
     private readonly _authService: AuthService
   ) {}
 
-  async findAll(): Promise<UserDto[]> {
+  async register(registerDto: RegisterUserDto): Promise<UserResponse> {
     try {
-      const users = await this._usersRepository.find()
-      return users.map((user) => user.toDTO())
-    } catch (error) {
-      throw new HttpException(
-        `something went wrong ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      )
-    }
-  }
-
-  async findOneById(userId: number): Promise<UserDto> {
-    try {
-      const user = await this._usersRepository.findOneOrFail(userId)
-      return user.toDTO()
-    } catch (error) {
-      throw new HttpException(
-        `user with id ${userId} not found`,
-        HttpStatus.NOT_FOUND
-      )
-    }
-  }
-
-  async create(createDto: CreateUserDto): Promise<UserResponse> {
-    try {
-      const mailExists = await this.mailExists(createDto.email)
+      const mailExists = await this.mailExists(registerDto.email)
       if (mailExists)
         throw new HttpException(
-          `email ${createDto.email} already exists`,
+          `email ${registerDto.email} already in use`,
           HttpStatus.CONFLICT
         )
 
       const passwordHash = await this._authService.hashPassword(
-        createDto.password
+        registerDto.password
       )
-      createDto.password = passwordHash
+      registerDto.password = passwordHash
 
-      const user = this._usersRepository.create(createDto)
+      const user = this._usersRepository.create(registerDto)
       await this._usersRepository.save(user)
 
       const userDto = user.toDTO()
       const accessToken = await this.generateJwt(userDto)
-      const refreshToken = await this.getRefreshToken(user.id)
+      const refreshToken = await this.generateRefreshToken(user.id)
       return {
         accessToken,
         refreshToken,
@@ -92,11 +68,52 @@ export class UsersService {
 
       const userDto = user.toDTO()
       const accessToken = await this.generateJwt(userDto)
-      const refreshToken = await this.getRefreshToken(user.id)
+      const refreshToken = await this.generateRefreshToken(user.id)
       return {
         accessToken,
         refreshToken,
         refreshTokenExp: '',
+        tokenType: TOKEN_TYPE,
+        expiresIn: EXPIRE_TIME
+      }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async findAll(): Promise<UserDto[]> {
+    try {
+      const users = await this._usersRepository.find()
+      return users.map((user) => user.toDTO())
+    } catch (error) {
+      throw new HttpException(
+        `something went wrong ${error}`,
+        HttpStatus.INTERNAL_SERVER_ERROR
+      )
+    }
+  }
+
+  async findOneById(userId: number): Promise<UserDto> {
+    try {
+      const user = await this._usersRepository.findOneOrFail(userId)
+      return user.toDTO()
+    } catch (error) {
+      throw new HttpException(
+        `user with id ${userId} not found`,
+        HttpStatus.NOT_FOUND
+      )
+    }
+  }
+
+  async refreshToken(userDto: UserDto): Promise<UserResponse> {
+    try {
+      const user = await this.findOneById(userDto.id)
+      const accessToken = await this.generateJwt(user)
+      const refreshToken = await this.generateRefreshToken(user.id)
+      return {
+        accessToken,
+        refreshToken,
+        refreshTokenExp: user.refreshTokenExp,
         tokenType: TOKEN_TYPE,
         expiresIn: EXPIRE_TIME
       }
@@ -134,13 +151,13 @@ export class UsersService {
     return false
   }
 
-  async generateJwt(user: UserDto): Promise<string> {
+  private async generateJwt(user: UserDto): Promise<string> {
     return this._authService.generateJwt(user)
   }
 
-  async getRefreshToken(userId: number): Promise<string> {
+  private async generateRefreshToken(userId: number): Promise<string> {
     const userToUpdate = await this.findOneById(userId)
-    const refreshToken = this._authService.getRefreshToken()
+    const refreshToken = this._authService.generateRefreshToken()
 
     if (userToUpdate)
       await this._usersRepository.update(userId, {

@@ -11,14 +11,13 @@ import {
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { RefreshStrategyService } from '../../users/strategies/refresh.strategy'
 import {
-  CreateUserDto,
+  RegisterUserDto,
   UserDto,
   UserResponse,
   UserResponseDto,
   ValidateUserDto,
   CookieData
 } from '@vnbp/common/dist/models'
-import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
 
@@ -26,19 +25,13 @@ import { Request, Response } from 'express'
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  getAll(): Promise<UserDto[]> {
-    return this._usersService.findAll()
-  }
-
   @Post()
-  async create(
-    @Body() createDto: CreateUserDto,
+  async register(
+    @Body() registerDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
-    const data = await this._usersService.create(createDto)
-    this.setCookie(data, res)
+    const userResponse = await this._usersService.register(registerDto)
+    this.setCookie(userResponse, res)
     return { success: true }
   }
 
@@ -48,8 +41,8 @@ export class UsersController {
     @Body() validateDto: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
-    const data = await this._usersService.signIn(validateDto)
-    this.setCookie(data, res)
+    const userResponse = await this._usersService.signIn(validateDto)
+    this.setCookie(userResponse, res)
     return { success: true }
   }
 
@@ -62,6 +55,12 @@ export class UsersController {
     return {
       success: true
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  getAll(): Promise<UserDto[]> {
+    return this._usersService.findAll()
   }
 
   @Get('user')
@@ -77,20 +76,9 @@ export class UsersController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    console.log(req)
-    const accessToken = await this._usersService.generateJwt(
-      req.user as UserDto
-    )
-    const refreshToken = await this._usersService.getRefreshToken(
-      (req.user as UserDto).id
-    )
-    const data = {
-      accessToken,
-      refreshToken,
-      refreshTokenExp: '',
-      tokenType: TOKEN_TYPE,
-      expiresIn: EXPIRE_TIME
-    }
+    console.log(req.user)
+    if (!req.user) return
+    const data = await this._usersService.refreshToken(req.user as UserDto)
     this.setCookie(data, res)
     return { success: true }
   }

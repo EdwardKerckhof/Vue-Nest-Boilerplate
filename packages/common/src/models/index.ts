@@ -7,7 +7,8 @@ export class UserDto {
     public id: number,
     public firstName: string,
     public lastName: string,
-    public email: string
+    public email: string,
+    public refreshTokenExp: string
   ) {}
 }
 
@@ -39,6 +40,7 @@ export class UserRequestDto {
   firstName: string
   lastName: string
   email: string
+  refreshTokenExp: string
 }
 
 export class ValidateUserDto {
@@ -49,7 +51,7 @@ export class ValidateUserDto {
   password!: string
 }
 
-export class CreateUserDto extends ValidateUserDto {
+export class RegisterUserDto extends ValidateUserDto {
   @IsNotEmpty()
   firstName!: string
 

@@ -16,7 +16,7 @@ export class AuthService {
     return this._jwtService.verifyAsync(token)
   }
 
-  getRefreshToken(): string {
+  generateRefreshToken(): string {
     return suid(16)
   }
 
