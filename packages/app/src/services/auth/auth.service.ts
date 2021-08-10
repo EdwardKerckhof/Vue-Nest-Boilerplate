@@ -8,6 +8,7 @@ import {
 
 import { useAuthStore } from '../../store/auth'
 import { apiClient } from '../useAxios'
+import { clearLocal } from '../useLocalStorage'
 
 export default class AuthService {
   authStore = useAuthStore()
@@ -22,6 +23,8 @@ export default class AuthService {
       )
       this.authStore.setAuthData(data)
 
+      this.getCurrentUser()
+
       return data
     } catch ({ response: { data } }) {
       return data as ErrorResponseDto
@@ -35,15 +38,19 @@ export default class AuthService {
       const { data } = await apiClient.post<UserResponse>('/users', createUser)
       this.authStore.setAuthData(data)
 
+      this.getCurrentUser()
+
       return data
     } catch ({ response: { data } }) {
       return data as ErrorResponseDto
     }
   }
 
-  async getCurrentUser(): Promise<UserDto | ErrorResponseDto> {
+  private async getCurrentUser(): Promise<UserDto | ErrorResponseDto> {
     try {
       const { data } = await apiClient.get<UserDto>('/users/user')
+
+      this.authStore.setCurrentUser(data)
 
       return data
     } catch ({ response: { data } }) {
@@ -54,6 +61,23 @@ export default class AuthService {
   async logout(): Promise<boolean> {
     const { data } = await apiClient.post('/users/logout')
 
+    if (data.success) {
+      this.authStore.$reset()
+      clearLocal()
+    }
+
     return data.success
+  }
+
+  async getAllUsers(): Promise<UserDto[] | ErrorResponseDto> {
+    try {
+      const { data } = await apiClient.get<UserDto[]>('/users')
+
+      this.authStore.setAllUsers(data)
+
+      return data
+    } catch ({ response }) {
+      return response as ErrorResponseDto
+    }
   }
 }

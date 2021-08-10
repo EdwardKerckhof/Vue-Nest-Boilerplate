@@ -3,7 +3,6 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import Banner from 'vite-plugin-banner'
 import Icons from 'vite-plugin-icons'
-import Pages from 'vite-plugin-pages'
 
 import pkg from './package.json'
 
@@ -14,15 +13,7 @@ export default defineConfig({
     Banner(
       `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n */`
     ),
-    Icons(),
-    Pages({
-      extendRoute(route) {
-        return {
-          ...route,
-          meta: { title: route.name }
-        }
-      }
-    })
+    Icons()
   ],
   resolve: {
     alias: {

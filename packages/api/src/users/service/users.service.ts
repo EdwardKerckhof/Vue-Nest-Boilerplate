@@ -212,7 +212,7 @@ export class UsersService {
     try {
       const data = await this._authService.verifyJwt(token)
 
-      if (!data)
+      if (!data.id)
         throw new HttpException(
           `unable to verify JWT cookie`,
           HttpStatus.UNAUTHORIZED

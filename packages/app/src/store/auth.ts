@@ -1,41 +1,61 @@
-import { UserDto, UserResponse } from '@vnbp/common/dist/models/index'
+import { UserDto } from '@vnbp/common/dist/models/index'
 import { defineStore } from 'pinia'
 
-import { jwtDecrypt } from '../helpers/jwtHelper'
+import { jwtDecrypt, tokenAlive } from '../helpers/jwtHelper'
+import { setLocal } from '../services/useLocalStorage'
+
+export interface AuthData {
+  accessToken: string
+  refreshToken: string
+}
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     _authData: {
       accessToken: '',
-      refreshToken: '',
-      refreshTokenExp: '',
-      tokenType: '',
-      expiresIn: -1
-    } as UserResponse,
+      refreshToken: ''
+    } as AuthData,
     _currentUser: {
       id: -1,
       firstName: '',
       lastName: '',
       email: '',
       refreshTokenExp: ''
-    } as UserDto
+    } as UserDto,
+    _allUsers: [] as UserDto[]
   }),
   getters: {
-    authData(): UserResponse {
+    authData(): AuthData {
       return this._authData
     },
     currentUser(): UserDto {
       return this._currentUser
+    },
+    tokenAlive(): boolean {
+      const refreshTokenExp = this._currentUser.refreshTokenExp
+      if (!refreshTokenExp) return false
+
+      return tokenAlive(refreshTokenExp)
+    },
+    allUsers(): UserDto[] {
+      return this._allUsers
     }
   },
   actions: {
-    setAuthData(data: UserResponse) {
+    setAuthData(data: AuthData) {
+      setLocal('vnbp_jwt', data.accessToken)
+      setLocal('vnbp_refresh_token', data.refreshToken)
       this._authData = data
-      this.setCurrentUser(data.accessToken)
+
+      const user = jwtDecrypt(data.accessToken)
+
+      this.setCurrentUser(JSON.parse(user))
     },
-    setCurrentUser(token: string) {
-      const decodedJwt = jwtDecrypt(token)
-      this._currentUser = JSON.parse(decodedJwt)
+    setCurrentUser(user: UserDto) {
+      this._currentUser = user
+    },
+    setAllUsers(users: UserDto[]) {
+      this._allUsers = users
     }
   }
 })

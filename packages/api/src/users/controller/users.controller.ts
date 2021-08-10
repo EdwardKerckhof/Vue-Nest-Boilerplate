@@ -9,14 +9,14 @@ import {
   HttpCode
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
-import { LocalAuthGuard } from '../guards/local-auth.guard'
 import { RefreshAuthGuard } from '../guards/refresh-auth.guard'
 import {
   RegisterUserDto,
   UserDto,
   UserResponse,
   UserResponseDto,
-  CookieData
+  CookieData,
+  ValidateUserDto
 } from '@vnbp/common/dist/models'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
@@ -35,14 +35,13 @@ export class UsersController {
     return data
   }
 
-  @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('signin')
   async signIn(
-    @Req() req: Request,
+    @Body() validateUser: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponse> {
-    const data = req.user as UserResponse
+    const data = await this._usersService.signIn(validateUser)
     this.setCookie(data.accessToken, data.refreshToken, res)
     return data
   }
@@ -76,12 +75,12 @@ export class UsersController {
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponseDto> {
-    if (!req.user) return { success: false }
+  ): Promise<CookieData> {
+    if (!req.user) return { token: '', refreshToken: '' }
     const { accessToken, refreshToken } =
       await this._usersService.createNewTokens(req.user as UserDto)
     this.setCookie(accessToken, refreshToken, res)
-    return { success: true }
+    return { token: accessToken, refreshToken }
   }
 
   private setCookie = (

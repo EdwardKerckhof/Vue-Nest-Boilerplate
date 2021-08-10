@@ -2,7 +2,7 @@
   <nav class="border">
     <ul class="flex">
       <li>
-        <Link :to="{ name: 'index' }">Home</Link>
+        <Link :to="{ name: 'home' }">Home</Link>
       </li>
       &nbsp;|&nbsp;
       <li>
@@ -13,18 +13,26 @@
         <Link :to="{ name: 'register' }">Register</Link>
       </li>
       &nbsp;|&nbsp;
+      <li>
+        <Link :to="{ name: 'auth' }">Auth</Link>
+      </li>
+      &nbsp;|&nbsp;
       <li class="authenticated">
         <button @click="logout">Logout</button>
       </li>
+
+      {{
+        isAuthenticated
+      }}
     </ul>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, defineComponent } from 'vue'
 
 import AuthService from '../../../services/auth/auth.service'
+import { useAuthStore } from '../../../store/auth'
 import Link from './Link.vue'
 
 export default defineComponent({
@@ -32,15 +40,15 @@ export default defineComponent({
   components: { Link },
   setup() {
     const authService = new AuthService()
+    const authStore = useAuthStore()
 
-    const user = null
-    const router = useRouter()
+    const isAuthenticated = computed(() => authStore.tokenAlive)
 
     const logout = async () => {
       await authService.logout()
     }
 
-    return { user, logout }
+    return { logout, isAuthenticated }
   }
 })
 </script>
