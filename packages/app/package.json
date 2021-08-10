@@ -13,9 +13,9 @@
   "dependencies": {
     "@vnbp/common": "/usr/src/bp/packages/common",
     "axios": "^0.21.1",
-    "pinia": "^2.0.0-rc.3",
     "vue": "^3.2.0-0",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@iconify/json": "^1.1.385",

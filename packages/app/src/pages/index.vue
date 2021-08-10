@@ -12,22 +12,15 @@
 
 <script lang="ts">
 import IconIcRoundShoppingCart from 'virtual:vite-icons/majesticons/shopping-cart-line'
-import { defineComponent, onMounted, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 import Hello from '../components/Hello.vue'
-import { useUserStore } from '../store/user'
 
 export default defineComponent({
   name: 'Home',
   components: { Hello, IconIcRoundShoppingCart },
   setup() {
-    const userStore = useUserStore()
-
-    const user = ref(null)
-
-    setTimeout(() => {
-      user.value = userStore.getCurrentUser
-    }, 0)
+    const user = computed(null)
 
     const counter = ref(0)
 
