@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.ts,.vue src --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@vnbp/common": "/mnt/Development/SideProjects/vue-nest-boilerplate/packages/common",
+    "@vnbp/common": "/usr/src/bp/packages/common",
     "axios": "^0.21.1",
     "pinia": "^2.0.0-rc.3",
     "vue": "^3.2.0-0",

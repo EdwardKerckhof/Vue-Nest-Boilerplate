@@ -38,11 +38,13 @@ export class UsersController {
   @Post('signin')
   @HttpCode(200)
   async signIn(
+    @Req() req: Request,
     @Body() validateDto: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
     const userResponse = await this._usersService.signIn(validateDto)
     this.setCookie(userResponse, res)
+    console.log(req.user)
     return { success: true }
   }
 
