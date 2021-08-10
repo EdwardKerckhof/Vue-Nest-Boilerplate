@@ -14,7 +14,10 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     const userResponse = await this._usersService.signIn({ email, password })
 
     if (!userResponse)
-      throw new HttpException(`unauthorized`, HttpStatus.UNAUTHORIZED)
+      throw new HttpException(
+        `in correct email or password`,
+        HttpStatus.UNAUTHORIZED
+      )
     return userResponse
   }
 }

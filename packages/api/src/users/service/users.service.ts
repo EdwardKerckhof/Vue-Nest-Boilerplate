@@ -44,8 +44,7 @@ export class UsersService {
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
-        user: userDto
+        expiresIn: EXPIRE_TIME
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -73,8 +72,7 @@ export class UsersService {
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
-        user: userDto
+        expiresIn: EXPIRE_TIME
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -111,7 +109,16 @@ export class UsersService {
       // see users.entity.ts
       return await this._usersRepository.findOneOrFail(
         { email },
-        { select: ['id', 'email', 'firstName', 'lastName', 'password'] }
+        {
+          select: [
+            'id',
+            'email',
+            'firstName',
+            'lastName',
+            'refreshTokenExp',
+            'password'
+          ]
+        }
       )
     } catch (error) {
       throw new HttpException(
@@ -152,8 +159,7 @@ export class UsersService {
         refreshToken,
         refreshTokenExp: user.refreshTokenExp,
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
-        user
+        expiresIn: EXPIRE_TIME
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -169,7 +175,7 @@ export class UsersService {
     if (userToUpdate)
       await this._usersRepository.update(userId, {
         refreshToken,
-        refreshTokenExp: moment().day(1).format('YYYY/MM/DD')
+        refreshTokenExp: moment().add(1, 'days').format('YYYY/MM/DD')
       })
 
     return refreshToken
@@ -196,7 +202,7 @@ export class UsersService {
 
       return user.toDTO()
     } catch (error) {
-      throw new HttpException(error, HttpStatus.UNAUTHORIZED)
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
     }
   }
 

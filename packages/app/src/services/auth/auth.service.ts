@@ -2,20 +2,27 @@ import {
   ErrorResponseDto,
   RegisterUserDto,
   UserDto,
-  UserResponseDto,
+  UserResponse,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
 
+import { useAuthStore } from '../../store/auth'
 import { apiClient } from '../useAxios'
 
 export default class AuthService {
+  authStore = useAuthStore()
+
   async login(
     validateUser: ValidateUserDto
-  ): Promise<UserResponseDto | ErrorResponseDto> {
+  ): Promise<UserResponse | ErrorResponseDto> {
     try {
-      const { data } = await apiClient.post('/users/signin', validateUser)
+      const { data } = await apiClient.post<UserResponse>(
+        '/users/signin',
+        validateUser
+      )
+      this.authStore.setAuthData(data)
 
-      return data as UserResponseDto
+      return data
     } catch ({ response: { data } }) {
       return data as ErrorResponseDto
     }
@@ -23,11 +30,12 @@ export default class AuthService {
 
   async register(
     createUser: RegisterUserDto
-  ): Promise<UserResponseDto | ErrorResponseDto> {
+  ): Promise<UserResponse | ErrorResponseDto> {
     try {
-      const { data } = await apiClient.post('/users', createUser)
+      const { data } = await apiClient.post<UserResponse>('/users', createUser)
+      this.authStore.setAuthData(data)
 
-      return data as UserResponseDto
+      return data
     } catch ({ response: { data } }) {
       return data as ErrorResponseDto
     }
@@ -35,9 +43,9 @@ export default class AuthService {
 
   async getCurrentUser(): Promise<UserDto | ErrorResponseDto> {
     try {
-      const { data } = await apiClient.get('/users/user')
+      const { data } = await apiClient.get<UserDto>('/users/user')
 
-      return data as UserDto
+      return data
     } catch ({ response: { data } }) {
       return data as ErrorResponseDto
     }

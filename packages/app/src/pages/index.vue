@@ -4,10 +4,9 @@
   Counter: {{ counter }}
   <button @click="counter++">Increment</button>
 
-  <IconIcRoundShoppingCart style="font-size: 2em; color: red" />
+  <pre>{{ currentUser }}</pre>
 
-  <p v-if="user">Hello, {{ user.firstName }}!</p>
-  <p v-else>You are not logged in.</p>
+  <IconIcRoundShoppingCart style="font-size: 2em; color: red" />
 </template>
 
 <script lang="ts">
@@ -15,16 +14,19 @@ import IconIcRoundShoppingCart from 'virtual:vite-icons/majesticons/shopping-car
 import { computed, defineComponent, ref } from 'vue'
 
 import Hello from '../components/Hello.vue'
+import { useAuthStore } from '../store/auth'
 
 export default defineComponent({
   name: 'Home',
   components: { Hello, IconIcRoundShoppingCart },
   setup() {
-    const user = computed(null)
+    const authStore = useAuthStore()
+
+    const currentUser = computed(() => authStore.currentUser)
 
     const counter = ref(0)
 
-    return { counter, user }
+    return { counter, currentUser }
   }
 })
 </script>

@@ -29,12 +29,10 @@ export class UsersController {
   async register(
     @Body() registerDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponseDto> {
-    const { accessToken, refreshToken } = await this._usersService.register(
-      registerDto
-    )
-    this.setCookie(accessToken, refreshToken, res)
-    return { success: true }
+  ): Promise<UserResponse> {
+    const data = await this._usersService.register(registerDto)
+    this.setCookie(data.accessToken, data.refreshToken, res)
+    return data
   }
 
   @UseGuards(LocalAuthGuard)
@@ -43,10 +41,10 @@ export class UsersController {
   async signIn(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponseDto> {
-    const { accessToken, refreshToken } = req.user as UserResponse
-    this.setCookie(accessToken, refreshToken, res)
-    return { success: true }
+  ): Promise<UserResponse> {
+    const data = req.user as UserResponse
+    this.setCookie(data.accessToken, data.refreshToken, res)
+    return data
   }
 
   @Post('logout')
@@ -78,8 +76,8 @@ export class UsersController {
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
-  ) {
-    if (!req.user) return
+  ): Promise<UserResponseDto> {
+    if (!req.user) return { success: false }
     const { accessToken, refreshToken } =
       await this._usersService.createNewTokens(req.user as UserDto)
     this.setCookie(accessToken, refreshToken, res)
