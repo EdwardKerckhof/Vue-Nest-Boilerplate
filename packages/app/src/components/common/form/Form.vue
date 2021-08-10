@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form @submit.prevent="$emit('submit')">
     <div v-for="(field, i) in formFields" :key="i">
       <FormInput
         v-if="field.type !== 'group'"
@@ -35,16 +35,12 @@ export default defineComponent({
   setup(_, { emit }) {
     const formFields: IFormInput[] = inject('formFields')!
 
-    const handleSubmit = () => {
-      emit('submit')
-    }
-
     const handleInput = ({ value, field, valIndex }: InputHandle) => {
       const index = formFields.findIndex((f) => f.id === field.id)
       if (index > -1) formFields[index].values[valIndex] = value
     }
 
-    return { handleSubmit, handleInput, formFields }
+    return { handleInput, formFields }
   }
 })
 </script>

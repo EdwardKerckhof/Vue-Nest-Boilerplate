@@ -13,8 +13,15 @@ export class UserDto {
 
 export class UserResponse {
   accessToken!: string
+  refreshToken!: string
+  refreshTokenExp!: string
   tokenType!: string
   expiresIn!: number
+}
+
+export class CookieData {
+  token: string
+  refreshToken: string
 }
 
 export class UserResponseDto {
@@ -28,7 +35,10 @@ export class ErrorResponseDto {
 }
 
 export class UserRequestDto {
-  user!: UserDto
+  id: number
+  firstName: string
+  lastName: string
+  email: string
 }
 
 export class ValidateUserDto {

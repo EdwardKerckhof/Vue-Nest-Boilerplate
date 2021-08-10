@@ -12,12 +12,13 @@
 <script lang="ts">
 import { ErrorResponseDto, UserResponseDto } from '@vnbp/common/dist/models'
 import { defineComponent, provide, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import AuthService from '../../../services/auth/auth.service'
 import Form from '../../common/form/Form.vue'
 import FormErrors from '../../common/form/FormErrors.vue'
 import FormLoader from '../../common/form/FormLoader.vue'
-import { registerFormFields } from '../register/registerFormFields'
+import { registerFormFields } from './registerFormFields'
 
 export default defineComponent({
   name: 'RegisterForm',
@@ -29,6 +30,7 @@ export default defineComponent({
       undefined
     )
     const loading = ref(false)
+    const router = useRouter()
 
     provide('formFields', registerFormFields)
 
@@ -45,6 +47,14 @@ export default defineComponent({
           email,
           password
         })
+
+        if ((registerData.value as ErrorResponseDto).statusCode) return
+
+        registerFormFields.forEach((field) => {
+          field.values = []
+        })
+
+        await router.push('/')
       }
 
       loading.value = false

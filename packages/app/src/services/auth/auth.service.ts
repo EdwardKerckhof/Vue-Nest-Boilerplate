@@ -1,6 +1,7 @@
 import {
   CreateUserDto,
   ErrorResponseDto,
+  UserDto,
   UserResponseDto,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
@@ -30,5 +31,21 @@ export default class AuthService {
     } catch ({ response: { data } }) {
       return data as ErrorResponseDto
     }
+  }
+
+  async getCurrentUser(): Promise<UserDto | ErrorResponseDto> {
+    try {
+      const { data } = await apiClient.get('/users/user')
+
+      return data as UserDto
+    } catch ({ response: { data } }) {
+      return data as ErrorResponseDto
+    }
+  }
+
+  async logout(): Promise<boolean> {
+    const { data } = await apiClient.post('/users/logout')
+
+    return data.success
   }
 }

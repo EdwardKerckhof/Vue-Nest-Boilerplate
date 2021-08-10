@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { UserDto } from '@vnbp/common/dist/models'
+import { suid } from 'rand-token'
 
 @Injectable()
 export class AuthService {
@@ -11,8 +12,12 @@ export class AuthService {
     return this._jwtService.signAsync({ ...user })
   }
 
-  verifyJwt(token: string): Promise<any> {
+  verifyJwt(token: string): Promise<UserDto> {
     return this._jwtService.verifyAsync(token)
+  }
+
+  getRefreshToken(): string {
+    return suid(16)
   }
 
   hashPassword(password: string): Promise<string> {

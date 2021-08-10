@@ -1,26 +1,29 @@
 <template>
-  <nav class="border">
-    <ul class="flex">
-      <li>
-        <router-link to="/">Home</router-link>
-      </li>
-      &nbsp;|&nbsp;
-      <li>
-        <router-link to="/login">Login</router-link>
-      </li>
-      &nbsp;|&nbsp;
-      <li>
-        <router-link to="/register">Register</router-link>
-      </li>
-    </ul>
-  </nav>
+  <Nav />
   <router-view></router-view>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ErrorResponseDto, UserDto } from '@vnbp/common/dist/models'
+import { defineComponent, onMounted, ref } from 'vue'
+
+import Nav from './components/common/nav/Nav.vue'
+import AuthService from './services/auth/auth.service'
+import { useUserStore } from './store/user'
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  components: { Nav },
+  setup() {
+    const userStore = useUserStore()
+    const authService = new AuthService()
+
+    onMounted(async () => {
+      const data = await authService.getCurrentUser()
+
+      if (!(data as ErrorResponseDto).statusCode)
+        userStore.setCurrentUser(data as UserDto)
+    })
+  }
 })
 </script>

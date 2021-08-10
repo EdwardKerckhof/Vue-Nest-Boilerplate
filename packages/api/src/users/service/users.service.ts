@@ -7,9 +7,10 @@ import {
   UserResponse,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
-import { Repository } from 'typeorm'
+import { MoreThanOrEqual, Repository } from 'typeorm'
 import { AuthService } from '../../auth/service/auth.service'
 import { User } from '../models/users.entity'
+import moment from 'moment'
 
 @Injectable()
 export class UsersService {
@@ -62,7 +63,14 @@ export class UsersService {
 
       const userDto = user.toDTO()
       const accessToken = await this.generateJwt(userDto)
-      return { accessToken, tokenType: TOKEN_TYPE, expiresIn: EXPIRE_TIME }
+      const refreshToken = await this.getRefreshToken(user.id)
+      return {
+        accessToken,
+        refreshToken,
+        refreshTokenExp: '',
+        tokenType: TOKEN_TYPE,
+        expiresIn: EXPIRE_TIME
+      }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
     }
@@ -84,7 +92,14 @@ export class UsersService {
 
       const userDto = user.toDTO()
       const accessToken = await this.generateJwt(userDto)
-      return { accessToken, tokenType: TOKEN_TYPE, expiresIn: EXPIRE_TIME }
+      const refreshToken = await this.getRefreshToken(user.id)
+      return {
+        accessToken,
+        refreshToken,
+        refreshTokenExp: '',
+        tokenType: TOKEN_TYPE,
+        expiresIn: EXPIRE_TIME
+      }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
     }
@@ -119,8 +134,47 @@ export class UsersService {
     return false
   }
 
-  private async generateJwt(user: UserDto): Promise<string> {
+  async generateJwt(user: UserDto): Promise<string> {
     return this._authService.generateJwt(user)
+  }
+
+  async getRefreshToken(userId: number): Promise<string> {
+    const userToUpdate = await this.findOneById(userId)
+    const refreshToken = this._authService.getRefreshToken()
+
+    if (userToUpdate)
+      await this._usersRepository.update(userId, {
+        refreshToken,
+        refreshTokenExp: moment().day(1).format('DD/MM/YYYY')
+      })
+
+    return refreshToken
+  }
+
+  async validateRefreshToken(
+    email: string,
+    refreshToken: string
+  ): Promise<UserDto> {
+    try {
+      const currentDate = moment().format('DD/MM/YYYY')
+      const user = await this._usersRepository.findOneOrFail({
+        where: {
+          email,
+          refreshToken,
+          refreshTokenExp: MoreThanOrEqual(currentDate)
+        }
+      })
+
+      if (!user)
+        throw new HttpException(`unauthorized`, HttpStatus.UNAUTHORIZED)
+
+      return user.toDTO()
+    } catch (error) {
+      throw new HttpException(
+        `user with email: ${email}, not found`,
+        HttpStatus.NOT_FOUND
+      )
+    }
   }
 
   async verifyJwt(token: string): Promise<UserDto> {

@@ -15,6 +15,12 @@ export class User {
   @Column({ unique: true })
   email!: string
 
+  @Column({ nullable: true, select: false })
+  refreshToken?: string
+
+  @Column({ nullable: true, select: false })
+  refreshTokenExp?: Date
+
   // exclude password by default
   @Column({ select: false })
   password!: string

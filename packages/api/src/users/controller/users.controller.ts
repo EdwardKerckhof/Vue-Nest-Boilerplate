@@ -9,23 +9,22 @@ import {
   Req
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
+import { RefreshStrategyService } from '../../users/strategies/refresh.strategy'
 import {
   CreateUserDto,
   UserDto,
+  UserResponse,
   UserResponseDto,
-  ValidateUserDto
+  ValidateUserDto,
+  CookieData
 } from '@vnbp/common/dist/models'
+import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
-
-  @Get('test')
-  testHello(): { title: string } {
-    return { title: 'HELLO FROM SERVER!' }
-  }
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -39,9 +38,7 @@ export class UsersController {
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
     const data = await this._usersService.create(createDto)
-    res.cookie(process.env.COOKIE_NAME || 'bp_jwt_fb', data.accessToken, {
-      httpOnly: true
-    })
+    this.setCookie(data, res)
     return { success: true }
   }
 
@@ -52,9 +49,7 @@ export class UsersController {
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
     const data = await this._usersService.signIn(validateDto)
-    res.cookie(process.env.COOKIE_NAME || 'bp_jwt', data.accessToken, {
-      httpOnly: true
-    })
+    this.setCookie(data, res)
     return { success: true }
   }
 
@@ -71,7 +66,42 @@ export class UsersController {
 
   @Get('user')
   getSignedInUser(@Req() req: Request): Promise<UserDto> {
-    const cookie = req.cookies[process.env.COOKIE_NAME || 'bp_jwt']
-    return this._usersService.verifyJwt(cookie)
+    const cookieData: CookieData =
+      req?.cookies[process.env.COOKIE_NAME || 'bp_jwt']
+    return this._usersService.verifyJwt(cookieData.token)
+  }
+
+  @UseGuards(RefreshStrategyService)
+  @Get('refresh')
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    console.log(req)
+    const accessToken = await this._usersService.generateJwt(
+      req.user as UserDto
+    )
+    const refreshToken = await this._usersService.getRefreshToken(
+      (req.user as UserDto).id
+    )
+    const data = {
+      accessToken,
+      refreshToken,
+      refreshTokenExp: '',
+      tokenType: TOKEN_TYPE,
+      expiresIn: EXPIRE_TIME
+    }
+    this.setCookie(data, res)
+    return { success: true }
+  }
+
+  private setCookie = (data: UserResponse, res: Response) => {
+    const cookieData: CookieData = {
+      token: data.accessToken,
+      refreshToken: data.refreshToken
+    }
+    res.cookie(process.env.COOKIE_NAME || 'bp_jwt', cookieData, {
+      httpOnly: true
+    })
   }
 }
