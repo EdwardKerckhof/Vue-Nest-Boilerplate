@@ -15,11 +15,6 @@ export const tokenAlive = (tokenExpirationTime: string): boolean => {
 
   const tokenExpirationTimeDate = new Date(+year, +month - 1, +day)
 
-  console.log(today)
-  console.log(tokenExpirationTimeDate)
-  console.log(today < tokenExpirationTimeDate)
-  // console.log(today < tokenExpirationTimeDate.getTime())
-
   if (today > tokenExpirationTimeDate) return false
 
   return true
