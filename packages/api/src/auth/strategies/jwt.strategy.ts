@@ -1,6 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { UserRequestDto, CookieData } from '@vnbp/common/dist/models'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
@@ -22,8 +22,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: UserRequestDto) {
-    if (!payload) return
+    if (!payload)
+      throw new HttpException(`unauthorized`, HttpStatus.UNAUTHORIZED)
 
-    return { ...payload }
+    return payload
   }
 }

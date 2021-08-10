@@ -38,14 +38,14 @@ export class UsersService {
       await this._usersRepository.save(user)
 
       const userDto = user.toDTO()
-      const accessToken = await this.generateJwt(userDto)
-      const refreshToken = await this.generateRefreshToken(user.id)
+      const { accessToken, refreshToken } = await this.createNewTokens(userDto)
       return {
         accessToken,
         refreshToken,
-        refreshTokenExp: '',
+        refreshTokenExp: user.refreshTokenExp || '',
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME
+        expiresIn: EXPIRE_TIME,
+        user: userDto
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -67,14 +67,14 @@ export class UsersService {
         )
 
       const userDto = user.toDTO()
-      const accessToken = await this.generateJwt(userDto)
-      const refreshToken = await this.generateRefreshToken(user.id)
+      const { accessToken, refreshToken } = await this.createNewTokens(userDto)
       return {
         accessToken,
         refreshToken,
-        refreshTokenExp: '',
+        refreshTokenExp: user.refreshTokenExp || '',
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME
+        expiresIn: EXPIRE_TIME,
+        user: userDto
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -102,23 +102,6 @@ export class UsersService {
         `user with id ${userId} not found`,
         HttpStatus.NOT_FOUND
       )
-    }
-  }
-
-  async refreshToken(userDto: UserDto): Promise<UserResponse> {
-    try {
-      const user = await this.findOneById(userDto.id)
-      const accessToken = await this.generateJwt(user)
-      const refreshToken = await this.generateRefreshToken(user.id)
-      return {
-        accessToken,
-        refreshToken,
-        refreshTokenExp: user.refreshTokenExp,
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME
-      }
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -155,6 +138,27 @@ export class UsersService {
     return this._authService.generateJwt(user)
   }
 
+  // creates a new accessToken and refreshToken
+  async createNewTokens(userDto: UserDto): Promise<UserResponse> {
+    try {
+      const user = await this.findOneById(userDto.id)
+      const accessToken = await this.generateJwt(user)
+      const refreshToken = await this.generateRefreshToken(user.id)
+      return {
+        accessToken,
+        refreshToken,
+        refreshTokenExp: user.refreshTokenExp,
+        tokenType: TOKEN_TYPE,
+        expiresIn: EXPIRE_TIME,
+        user
+      }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  // generates a refreshToken for the user with given Id.
+  // updates refreshToken and refreshTokenExp in database.
   private async generateRefreshToken(userId: number): Promise<string> {
     const userToUpdate = await this.findOneById(userId)
     const refreshToken = this._authService.generateRefreshToken()
@@ -162,18 +166,23 @@ export class UsersService {
     if (userToUpdate)
       await this._usersRepository.update(userId, {
         refreshToken,
-        refreshTokenExp: moment().day(1).format('DD/MM/YYYY')
+        refreshTokenExp: moment().day(1).format('YYYY/MM/DD')
       })
 
     return refreshToken
   }
 
+  // USED BY `RefreshAuthGuard`
+  // finds user by email and refreshToken and where
+  // users refreshTokenExp is bigger or equal than today.
+  // if found, return that user (refreshToken is valid),
+  // else throw error
   async validateRefreshToken(
     email: string,
     refreshToken: string
   ): Promise<UserDto> {
+    const currentDate = moment().format('YYYY/MM/DD')
     try {
-      const currentDate = moment().format('DD/MM/YYYY')
       const user = await this._usersRepository.findOneOrFail({
         where: {
           email,
@@ -182,18 +191,14 @@ export class UsersService {
         }
       })
 
-      if (!user)
-        throw new HttpException(`unauthorized`, HttpStatus.UNAUTHORIZED)
-
       return user.toDTO()
     } catch (error) {
-      throw new HttpException(
-        `user with email: ${email}, not found`,
-        HttpStatus.NOT_FOUND
-      )
+      throw new HttpException(error, HttpStatus.UNAUTHORIZED)
     }
   }
 
+  // verifies the cookies JWT
+  // if valid, returns the user by id from the JWT
   async verifyJwt(token: string): Promise<UserDto> {
     try {
       const data = await this._authService.verifyJwt(token)
@@ -207,7 +212,7 @@ export class UsersService {
       return await this.findOneById(data.id)
     } catch (error) {
       throw new HttpException(
-        `unable to verify JWT cookie`,
+        `unable to verify JWT cookie: ${error}`,
         HttpStatus.UNAUTHORIZED
       )
     }

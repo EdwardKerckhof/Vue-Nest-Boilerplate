@@ -18,6 +18,7 @@ export class UserResponse {
   refreshTokenExp!: string
   tokenType!: string
   expiresIn!: number
+  user!: UserDto
 }
 
 export class CookieData {

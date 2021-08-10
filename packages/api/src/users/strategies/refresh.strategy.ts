@@ -1,22 +1,18 @@
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
 import { UserRequestDto, CookieData, UserDto } from '@vnbp/common/dist/models'
-import { UsersService } from '../../users/service/users.service'
+import { UsersService } from '../service/users.service'
 
 @Injectable()
-export class RefreshStrategyService extends PassportStrategy(
-  Strategy,
-  'refresh'
-) {
+export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(
     readonly _configService: ConfigService,
     private readonly _usersService: UsersService
   ) {
     super({
-      passReqToCallback: true,
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
           const cookieData: CookieData =
@@ -24,6 +20,7 @@ export class RefreshStrategyService extends PassportStrategy(
           return cookieData?.token
         }
       ]),
+      passReqToCallback: true,
       ignoreExpiration: true, // TRUE
       secretOrKey: _configService.get('JWT_SECRET')
     })
@@ -34,15 +31,19 @@ export class RefreshStrategyService extends PassportStrategy(
       req?.cookies[process.env.COOKIE_NAME || 'bp_jwt']
 
     if (!cookieData.refreshToken || !payload.email)
-      throw new BadRequestException()
+      throw new HttpException(
+        `no refresh token or email`,
+        HttpStatus.BAD_REQUEST
+      )
 
     const user = await this._usersService.validateRefreshToken(
       payload.email,
       cookieData.refreshToken
     )
 
-    if (!user) throw new BadRequestException()
+    if (!user)
+      throw new HttpException(`invalid refresh token`, HttpStatus.BAD_REQUEST)
 
-    return { ...payload }
+    return user
   }
 }
