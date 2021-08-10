@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
 import { UserRequestDto, CookieData, UserDto } from '@vnbp/common/dist/models'
-import { UsersService } from '../service/users.service'
+import { UsersService } from '../../users/service/users.service'
 
 @Injectable()
 export class RefreshStrategyService extends PassportStrategy(

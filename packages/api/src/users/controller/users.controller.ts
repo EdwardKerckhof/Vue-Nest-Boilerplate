@@ -3,13 +3,12 @@ import {
   Controller,
   Get,
   Post,
-  HttpCode,
   UseGuards,
   Res,
   Req
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
-import { RefreshStrategyService } from '../../users/strategies/refresh.strategy'
+import { RefreshStrategyService } from '../../auth/strategies/refresh.strategy'
 import {
   RegisterUserDto,
   UserDto,
@@ -20,11 +19,13 @@ import {
 } from '@vnbp/common/dist/models'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
+import { AuthGuard } from '@nestjs/passport'
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
+  @UseGuards(AuthGuard('local'))
   @Post()
   async register(
     @Body() registerDto: RegisterUserDto,
@@ -35,16 +36,14 @@ export class UsersController {
     return { success: true }
   }
 
+  @UseGuards(AuthGuard('local'))
   @Post('signin')
-  @HttpCode(200)
   async signIn(
-    @Req() req: Request,
     @Body() validateDto: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
     const userResponse = await this._usersService.signIn(validateDto)
     this.setCookie(userResponse, res)
-    console.log(req.user)
     return { success: true }
   }
 

@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AuthService } from './service/auth.service'
-import { LocalStrategy } from './strategies/local.strategy'
 import { JwtStrategy } from './strategies/jwt.strategy'
 
 @Module({
@@ -17,7 +16,7 @@ import { JwtStrategy } from './strategies/jwt.strategy'
       })
     })
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, JwtAuthGuard],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard],
   exports: [AuthService]
 })
 export class AuthModule {}

@@ -1,8 +1,8 @@
-import { Strategy } from 'passport-jwt'
+import { Strategy } from 'passport-local'
 import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { UserResponse } from '@vnbp/common/dist/models'
-import { UsersService } from '../../users/service/users.service'
+import { UsersService } from '../service/users.service'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
@@ -14,7 +14,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     const user = await this._usersService.signIn({ email, password })
 
     if (!user) throw new HttpException(`unauthorized`, HttpStatus.UNAUTHORIZED)
-
     return user
   }
 }
