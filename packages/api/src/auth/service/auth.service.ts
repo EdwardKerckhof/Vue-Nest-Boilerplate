@@ -24,6 +24,7 @@ export class AuthService {
     return bcrypt.hash(password, 12)
   }
 
+  // compares passwords using bcrypt
   comparePassword(
     password: string,
     storedPasswordHash: string

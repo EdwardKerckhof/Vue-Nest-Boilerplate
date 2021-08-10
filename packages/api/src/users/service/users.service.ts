@@ -53,7 +53,7 @@ export class UsersService {
   }
 
   async signIn(validateDto: ValidateUserDto): Promise<UserResponse> {
-    const user = await this.findUserByEmail(validateDto.email)
+    const user = await this.getUserByEmail(validateDto.email)
 
     try {
       const passwordCorrect = await this.validatePassword(
@@ -81,7 +81,7 @@ export class UsersService {
     }
   }
 
-  async findAll(): Promise<UserDto[]> {
+  async getAllUsers(): Promise<UserDto[]> {
     try {
       const users = await this._usersRepository.find()
       return users.map((user) => user.toDTO())
@@ -93,7 +93,7 @@ export class UsersService {
     }
   }
 
-  async findOneById(userId: number): Promise<UserDto> {
+  async getUserById(userId: number): Promise<UserDto> {
     try {
       const user = await this._usersRepository.findOneOrFail(userId)
       return user.toDTO()
@@ -105,7 +105,7 @@ export class UsersService {
     }
   }
 
-  private async findUserByEmail(email: string): Promise<User> {
+  private async getUserByEmail(email: string): Promise<User> {
     try {
       // include password because it is excluded by default
       // see users.entity.ts
@@ -121,6 +121,7 @@ export class UsersService {
     }
   }
 
+  // validates passwords using bcrypt
   private validatePassword(
     password: string,
     storedPasswordHash: string
@@ -128,20 +129,22 @@ export class UsersService {
     return this._authService.comparePassword(password, storedPasswordHash)
   }
 
+  // checks if email address is already in use
   private async mailExists(email: string): Promise<boolean> {
     const user = await this._usersRepository.findOne({ email })
     if (user) return true
     return false
   }
 
+  // generates a new JWT
   private async generateJwt(user: UserDto): Promise<string> {
     return this._authService.generateJwt(user)
   }
 
-  // creates a new accessToken and refreshToken
+  // creates a new accessToken and refreshToken for the given user
   async createNewTokens(userDto: UserDto): Promise<UserResponse> {
     try {
-      const user = await this.findOneById(userDto.id)
+      const user = await this.getUserById(userDto.id)
       const accessToken = await this.generateJwt(user)
       const refreshToken = await this.generateRefreshToken(user.id)
       return {
@@ -157,10 +160,10 @@ export class UsersService {
     }
   }
 
-  // generates a refreshToken for the user with given Id.
+  // generates a refreshToken for the user with given Id (1 day).
   // updates refreshToken and refreshTokenExp in database.
   private async generateRefreshToken(userId: number): Promise<string> {
-    const userToUpdate = await this.findOneById(userId)
+    const userToUpdate = await this.getUserById(userId)
     const refreshToken = this._authService.generateRefreshToken()
 
     if (userToUpdate)
@@ -209,7 +212,7 @@ export class UsersService {
           HttpStatus.UNAUTHORIZED
         )
 
-      return await this.findOneById(data.id)
+      return await this.getUserById(data.id)
     } catch (error) {
       throw new HttpException(
         `unable to verify JWT cookie: ${error}`,
