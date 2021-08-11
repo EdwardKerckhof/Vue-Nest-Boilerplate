@@ -8,7 +8,9 @@ import {
   UseGuards,
   Res,
   Req,
-  HttpCode
+  HttpCode,
+  Put,
+  Param
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { RefreshAuthGuard } from '../../auth/guards/refresh-auth.guard'
@@ -18,7 +20,8 @@ import {
   UserResponse,
   UserResponseDto,
   CookieData,
-  ValidateUserDto
+  ValidateUserDto,
+  UserRole
 } from '@vnbp/common/dist/models'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
@@ -59,11 +62,21 @@ export class UsersController {
     }
   }
 
-  @Roles('Admin')
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   getAll(): Promise<UserDto[]> {
     return this._usersService.getAllUsers()
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Put(':id/roles')
+  addRole(
+    @Param('id') userId: number,
+    @Body() roleReq: { role: UserRole }
+  ): Promise<UserDto> {
+    return this._usersService.addRoleToUser(userId, roleReq.role)
   }
 
   @Get('user')

@@ -5,6 +5,7 @@ import {
   RegisterUserDto,
   UserDto,
   UserResponse,
+  UserRole,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
 import { MoreThanOrEqual, Repository } from 'typeorm'
@@ -100,6 +101,20 @@ export class UsersService {
       throw new HttpException(
         `user with id ${userId} not found`,
         HttpStatus.NOT_FOUND
+      )
+    }
+  }
+
+  async addRoleToUser(userId: number, role: UserRole): Promise<UserDto> {
+    try {
+      const user = await this._usersRepository.findOneOrFail(userId)
+      user.roles = [...user.roles, role]
+      await this._usersRepository.save({ ...user })
+      return user.toDTO()
+    } catch (error) {
+      throw new HttpException(
+        `unable to add role: ${role} to user with id: ${userId}: ${error}`,
+        HttpStatus.BAD_REQUEST
       )
     }
   }
