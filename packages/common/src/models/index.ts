@@ -8,7 +8,8 @@ export class UserDto {
     public firstName: string,
     public lastName: string,
     public email: string,
-    public refreshTokenExp: string
+    public refreshTokenExp: string,
+    public role: string
   ) {}
 }
 
@@ -17,6 +18,7 @@ export class UserResponse {
   refreshToken!: string
   refreshTokenExp!: string
   tokenType!: string
+  role!: string
   expiresIn!: number
 }
 

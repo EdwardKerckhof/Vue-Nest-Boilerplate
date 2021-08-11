@@ -21,6 +21,9 @@ export class User {
   @Column({ nullable: true, type: 'date' })
   refreshTokenExp?: string
 
+  @Column({ default: 'user' })
+  role!: string
+
   // exclude password by default
   @Column({ select: false })
   password!: string
@@ -36,7 +39,8 @@ export class User {
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email.toLowerCase(),
-      refreshTokenExp: this.refreshTokenExp || ''
+      refreshTokenExp: this.refreshTokenExp || '',
+      role: this.role
     }
   }
 }

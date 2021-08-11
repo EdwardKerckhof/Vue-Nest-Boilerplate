@@ -16,7 +16,6 @@ import {
 import { MoreThanOrEqual, Repository } from 'typeorm'
 import { AuthService } from '../../auth/service/auth.service'
 import { User } from '../models/users.entity'
-import moment from 'moment'
 
 @Injectable()
 export class UsersService {
@@ -51,7 +50,8 @@ export class UsersService {
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME
+        expiresIn: EXPIRE_TIME,
+        role: user.role
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -79,7 +79,8 @@ export class UsersService {
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME
+        expiresIn: EXPIRE_TIME,
+        role: user.role
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -166,7 +167,8 @@ export class UsersService {
         refreshToken,
         refreshTokenExp: user.refreshTokenExp,
         tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME
+        expiresIn: EXPIRE_TIME,
+        role: user.role
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -179,10 +181,13 @@ export class UsersService {
     const userToUpdate = await this.getUserById(userId)
     const refreshToken = this._authService.generateRefreshToken()
 
+    const today = new Date()
+    const tomorrow = new Date(today.setDate(today.getDate() + 1))
+
     if (userToUpdate)
       await this._usersRepository.update(userId, {
         refreshToken,
-        refreshTokenExp: moment().add(1, 'days').format('YYYY/MM/DD')
+        refreshTokenExp: this.dateToISOString(tomorrow)
       })
 
     return refreshToken
@@ -197,7 +202,7 @@ export class UsersService {
     email: string,
     refreshToken: string
   ): Promise<UserDto> {
-    const currentDate = moment().format('YYYY/MM/DD')
+    const currentDate = new Date()
     try {
       const user = await this._usersRepository.findOneOrFail({
         where: {
@@ -232,5 +237,9 @@ export class UsersService {
         HttpStatus.UNAUTHORIZED
       )
     }
+  }
+
+  private dateToISOString(date: Date) {
+    return date.toISOString()
   }
 }
