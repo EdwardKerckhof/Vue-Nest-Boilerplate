@@ -3,7 +3,7 @@
   Counter: {{ counter }}
   <button @click="counter++">Increment</button>
 
-  <p v-if="currentUser.firstName !== ''">Hello, {{ currentUser.firstName }}</p>
+  <p v-if="authenticated">Hello, {{ currentUser.firstName }}</p>
   <p v-else>You are not logged in.</p>
 
   <IconIcRoundShoppingCart style="font-size: 2em; color: red" />
@@ -22,10 +22,11 @@ export default defineComponent({
     const authStore = useAuthStore()
 
     const currentUser = computed(() => authStore.currentUser)
+    const authenticated = computed(() => authStore.tokenAlive)
 
     const counter = ref(0)
 
-    return { counter, currentUser }
+    return { counter, currentUser, authenticated }
   }
 })
 </script>
