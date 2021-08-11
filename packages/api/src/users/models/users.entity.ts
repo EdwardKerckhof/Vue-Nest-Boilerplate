@@ -1,4 +1,4 @@
-import { UserDto } from '@vnbp/common/dist/models'
+import { UserDto, UserRole } from '@vnbp/common/dist/models'
 import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
 
 @Entity()
@@ -21,8 +21,13 @@ export class User {
   @Column({ nullable: true, type: 'date' })
   refreshTokenExp?: string
 
-  @Column({ default: 'user' })
-  role!: string
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    array: true,
+    default: [UserRole.USER]
+  })
+  roles!: UserRole[]
 
   // exclude password by default
   @Column({ select: false })
@@ -40,7 +45,7 @@ export class User {
       lastName: this.lastName,
       email: this.email.toLowerCase(),
       refreshTokenExp: this.refreshTokenExp || '',
-      role: this.role
+      roles: this.roles
     }
   }
 }
