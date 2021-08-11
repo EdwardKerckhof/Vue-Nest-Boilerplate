@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import {
@@ -17,6 +23,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly _usersRepository: Repository<User>,
+    @Inject(forwardRef(() => AuthService))
     private readonly _authService: AuthService
   ) {}
 

@@ -9,7 +9,7 @@ import {
   HttpCode
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
-import { RefreshAuthGuard } from '../guards/refresh-auth.guard'
+import { RefreshAuthGuard } from '../../auth/guards/refresh-auth.guard'
 import {
   RegisterUserDto,
   UserDto,

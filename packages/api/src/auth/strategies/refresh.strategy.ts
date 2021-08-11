@@ -1,15 +1,22 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+  forwardRef,
+  Inject,
+  HttpException,
+  HttpStatus,
+  Injectable
+} from '@nestjs/common'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
 import { UserRequestDto, CookieData, UserDto } from '@vnbp/common/dist/models'
-import { UsersService } from '../service/users.service'
+import { UsersService } from '../../users/service/users.service'
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(
     readonly _configService: ConfigService,
+    @Inject(forwardRef(() => UsersService))
     private readonly _usersService: UsersService
   ) {
     super({
