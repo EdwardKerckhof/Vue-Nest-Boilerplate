@@ -6,7 +6,7 @@
     "module": "ESNext",
     "jsx": "preserve",
     "lib": ["ESNext", "dom"],
-    "types": ["node", "vite-plugin-pages/client"],
+    "types": ["node"],
     "baseUrl": "/",
     "paths": {
       "@/*": ["src/*"]
