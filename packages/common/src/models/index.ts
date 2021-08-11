@@ -1,5 +1,10 @@
 import { IsEmail, IsNotEmpty } from 'class-validator'
 
+export enum UserRole {
+  USER = 'User',
+  ADMIN = 'Admin'
+}
+
 export class UserDto {
   protected password?: string
 
@@ -9,7 +14,7 @@ export class UserDto {
     public lastName: string,
     public email: string,
     public refreshTokenExp: string,
-    public role: string
+    public roles: UserRole[]
   ) {}
 }
 
@@ -18,7 +23,7 @@ export class UserResponse {
   refreshToken!: string
   refreshTokenExp!: string
   tokenType!: string
-  role!: string
+  roles!: UserRole[]
   expiresIn!: number
 }
 

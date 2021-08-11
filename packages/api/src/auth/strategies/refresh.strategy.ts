@@ -1,23 +1,19 @@
-import {
-  forwardRef,
-  Inject,
-  HttpException,
-  HttpStatus,
-  Injectable
-} from '@nestjs/common'
+import { User } from './../../users/models/users.entity'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
 import { UserRequestDto, CookieData, UserDto } from '@vnbp/common/dist/models'
-import { UsersService } from '../../users/service/users.service'
+import { InjectRepository } from '@nestjs/typeorm'
+import { MoreThanOrEqual, Repository } from 'typeorm'
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(
     readonly _configService: ConfigService,
-    @Inject(forwardRef(() => UsersService))
-    private readonly _usersService: UsersService
+    @InjectRepository(User)
+    private readonly _usersRepository: Repository<User>
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -43,14 +39,19 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
         HttpStatus.BAD_REQUEST
       )
 
-    const user = await this._usersService.validateRefreshToken(
-      payload.email,
-      cookieData.refreshToken
-    )
+    try {
+      const currentDate = new Date()
+      const user = await this._usersRepository.findOneOrFail({
+        where: {
+          email: payload.email,
+          refreshToken: cookieData.refreshToken,
+          refreshTokenExp: MoreThanOrEqual(currentDate)
+        }
+      })
 
-    if (!user)
-      throw new HttpException(`invalid refresh token`, HttpStatus.BAD_REQUEST)
-
-    return user
+      return user.toDTO()
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+    }
   }
 }

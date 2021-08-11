@@ -1,3 +1,5 @@
+import { RolesGuard } from './../../auth/guards/roles.guard'
+import { Roles } from './../../auth/decorators/role.decorator'
 import {
   Body,
   Controller,
@@ -57,7 +59,8 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('Admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   getAll(): Promise<UserDto[]> {
     return this._usersService.getAllUsers()
