@@ -4,7 +4,7 @@ import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import {
   RegisterUserDto,
   UserDto,
-  UserResponse,
+  ValidationResponse,
   UserRole,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
@@ -25,7 +25,7 @@ export class UsersService {
     private readonly _authService: AuthService
   ) {}
 
-  async register(registerDto: RegisterUserDto): Promise<UserResponse> {
+  async register(registerDto: RegisterUserDto): Promise<ValidationResponse> {
     try {
       const mailExists = await this.mailExists(registerDto.email)
       if (mailExists)
@@ -57,7 +57,7 @@ export class UsersService {
     }
   }
 
-  async signIn(validateDto: ValidateUserDto): Promise<UserResponse> {
+  async signIn(validateDto: ValidateUserDto): Promise<ValidationResponse> {
     const user = await this.getUserByEmail(validateDto.email)
 
     try {
@@ -97,6 +97,31 @@ export class UsersService {
     }
   }
 
+  private async getUserByEmail(email: string): Promise<User> {
+    try {
+      // include password because it is excluded by default
+      // see users.entity.ts
+      return await this._usersRepository.findOneOrFail(
+        { email },
+        {
+          select: [
+            'id',
+            'email',
+            'firstName',
+            'lastName',
+            'refreshTokenExp',
+            'password'
+          ]
+        }
+      )
+    } catch (error) {
+      throw new HttpException(
+        `user with email: ${email}, not found`,
+        HttpStatus.NOT_FOUND
+      )
+    }
+  }
+
   async getUserById(userId: number): Promise<UserDto> {
     try {
       const user = await this._usersRepository.findOneOrFail(userId)
@@ -123,31 +148,6 @@ export class UsersService {
     }
   }
 
-  private async getUserByEmail(email: string): Promise<User> {
-    try {
-      // include password because it is excluded by default
-      // see users.entity.ts
-      return await this._usersRepository.findOneOrFail(
-        { email },
-        {
-          select: [
-            'id',
-            'email',
-            'firstName',
-            'lastName',
-            'refreshTokenExp',
-            'password'
-          ]
-        }
-      )
-    } catch (error) {
-      throw new HttpException(
-        `user with email: ${email}, not found`,
-        HttpStatus.NOT_FOUND
-      )
-    }
-  }
-
   // validates passwords using bcrypt
   private validatePassword(
     password: string,
@@ -169,7 +169,7 @@ export class UsersService {
   }
 
   // creates a new accessToken and refreshToken for the given user
-  async createNewTokens(userDto: UserDto): Promise<UserResponse> {
+  async createNewTokens(userDto: UserDto): Promise<ValidationResponse> {
     try {
       const user = await this.getUserById(userDto.id)
       const accessToken = await this.generateJwt(user)

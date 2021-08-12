@@ -2,8 +2,8 @@ import {
   ErrorResponseDto,
   RegisterUserDto,
   UserDto,
-  UserResponse,
-  ValidateUserDto
+  ValidateUserDto,
+  ValidationResponse
 } from '@vnbp/common/dist/models'
 
 import { useAuthStore } from '../../store/auth'
@@ -15,9 +15,9 @@ export default class AuthService {
 
   async login(
     validateUser: ValidateUserDto
-  ): Promise<UserResponse | ErrorResponseDto> {
+  ): Promise<ValidationResponse | ErrorResponseDto> {
     try {
-      const { data } = await apiClient.post<UserResponse>(
+      const { data } = await apiClient.post<ValidationResponse>(
         '/users/signin',
         validateUser
       )
@@ -33,9 +33,12 @@ export default class AuthService {
 
   async register(
     createUser: RegisterUserDto
-  ): Promise<UserResponse | ErrorResponseDto> {
+  ): Promise<ValidationResponse | ErrorResponseDto> {
     try {
-      const { data } = await apiClient.post<UserResponse>('/users', createUser)
+      const { data } = await apiClient.post<ValidationResponse>(
+        '/users',
+        createUser
+      )
       this.authStore.setAuthData(data)
 
       this.getCurrentUser()
