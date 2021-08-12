@@ -21,9 +21,9 @@ Before running any docker commands make sure you create a .env file at the root 
 
 Information:
 
-- Database can be accesses via PG-Admin at the URL `http://localhost:5050`
-- API can be accesses at the URL `http://localhost:3000/api`
-- Vue APP can be accesses at the URL `http://localhost:4200`
+- Database can be accesses via PG-Admin at the URL <http://localhost:5050>
+- API can be accesses at the URL <http://localhost:3000/api>
+- Vue APP can be accesses at the URL <http://localhost:4200>
 
 Easiest way: Using docker-compose
 
