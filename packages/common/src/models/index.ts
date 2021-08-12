@@ -9,14 +9,59 @@ export enum UserRole {
 export class UserDto {
   protected password?: string
 
+  @ApiProperty({
+    type: 'string',
+    description: 'user id'
+  })
+  id: number
+
+  @ApiProperty({
+    type: 'string',
+    description: 'first name'
+  })
+  firstName: string
+
+  @ApiProperty({
+    type: 'string',
+    description: 'last name'
+  })
+  lastName: string
+
+  @ApiProperty({
+    type: 'string',
+    description: 'email'
+  })
+  email: string
+
+  @ApiProperty({
+    type: 'string',
+    description: 'refresh token expiration date'
+  })
+  refreshTokenExp: string
+
+  @ApiProperty({
+    enum: UserRole,
+    enumName: 'User Role',
+    description: 'user roles',
+    isArray: true
+  })
+  roles: UserRole[]
+
   constructor(
-    public id: number,
-    public firstName: string,
-    public lastName: string,
-    public email: string,
-    public refreshTokenExp: string,
-    public roles: UserRole[]
-  ) {}
+    id: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    refreshTokenExp: string,
+    roles: UserRole[]
+  ) {
+    this.id = id
+    this.firstName = firstName
+    this.lastName = lastName
+    this.email = email
+    this.refreshTokenExp = refreshTokenExp
+    this.roles = roles
+  }
 }
 
 export class ValidationResponse {
@@ -39,18 +84,32 @@ export class ValidationResponse {
   refreshTokenExp!: string
 
   @ApiProperty({
-    type: 'string',
-    description: 'user roles'
+    enum: UserRole,
+    enumName: 'User Role',
+    description: 'user roles',
+    isArray: true
   })
   roles!: UserRole[]
 }
 
 export class CookieData {
+  @ApiProperty({
+    description: 'JWT',
+    type: 'string'
+  })
   token: string
+  @ApiProperty({
+    description: 'refresh Token',
+    type: 'string'
+  })
   refreshToken: string
 }
 
 export class UserResponseDto {
+  @ApiProperty({
+    description: 'returns success boolean',
+    type: 'boolean'
+  })
   success!: boolean
 }
 

@@ -28,17 +28,20 @@ import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
 import { Pagination } from 'nestjs-typeorm-paginate'
 import { User } from '../models/users.entity'
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 
 interface RequestModel extends Request {
   user: UserDto
 }
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiCreatedResponse({ type: ValidationResponse })
   async register(
     @Body() registerDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
@@ -49,8 +52,9 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
   @Post('signin')
+  @HttpCode(200)
+  @ApiOkResponse({ type: ValidationResponse })
   async signIn(
     @Body() validateUser: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
@@ -61,6 +65,8 @@ export class UsersController {
   }
 
   @Post('logout')
+  @HttpCode(200)
+  @ApiOkResponse({ type: UserResponseDto })
   async logout(
     @Res({ passthrough: true }) res: Response
   ): Promise<UserResponseDto> {
@@ -74,6 +80,7 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
+  @ApiOkResponse({ type: UserDto, isArray: true })
   getAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10
@@ -89,6 +96,7 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put(':id/roles')
+  @ApiOkResponse({ type: UserDto })
   addRole(
     @Param('id') userId: number,
     @Body() roleReq: { role: UserRole }
@@ -97,12 +105,14 @@ export class UsersController {
   }
 
   @Get('user')
+  @ApiOkResponse({ type: UserDto })
   getSignedInUser(@Req() req: RequestModel): UserDto {
     return req.user
   }
 
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
+  @ApiOkResponse({ type: CookieData })
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response

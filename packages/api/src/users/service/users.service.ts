@@ -132,8 +132,10 @@ export class UsersService {
   async addRoleToUser(userId: number, role: UserRole): Promise<UserDto> {
     try {
       const user = await this._usersRepository.findOneOrFail(userId)
-      user.roles = [...user.roles, role]
-      await this._usersRepository.save({ ...user })
+      if (!user.roles.includes(role)) {
+        user.roles = [...user.roles, role]
+        await this._usersRepository.save({ ...user })
+      }
       return user.toDTO()
     } catch (error) {
       throw new HttpException(
