@@ -1,5 +1,11 @@
 import { UserDto, UserRole } from '@vnbp/common/dist/models'
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
+import {
+  BeforeUpdate,
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert
+} from 'typeorm'
 
 @Entity()
 export class User {
@@ -34,8 +40,11 @@ export class User {
   password!: string
 
   @BeforeInsert()
+  @BeforeUpdate()
   emailToLowerCase() {
     this.email = this.email.toLowerCase()
+    this.firstName = this.firstName.toLowerCase()
+    this.lastName = this.lastName.toLowerCase()
   }
 
   toDTO = (): UserDto => {

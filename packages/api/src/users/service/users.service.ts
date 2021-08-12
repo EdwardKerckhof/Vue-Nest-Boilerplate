@@ -7,7 +7,7 @@ import {
   UserRole,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
-import { MoreThanOrEqual, Repository } from 'typeorm'
+import { MoreThanOrEqual, Repository, Like } from 'typeorm'
 import { AuthService } from '../../auth/service/auth.service'
 import { User } from '../models/users.entity'
 import {
@@ -89,6 +89,23 @@ export class UsersService {
         `something went wrong ${error}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       )
+    }
+  }
+
+  async findAllByName(name: string): Promise<UserDto[]> {
+    try {
+      const users = await this._usersRepository.find({
+        where: [
+          { firstName: Like(`%${name}%`) },
+          { lastName: Like(`%${name}%`) }
+        ]
+      })
+
+      if (users.length > 0) return users.map((user) => user.toDTO())
+
+      return []
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }
 

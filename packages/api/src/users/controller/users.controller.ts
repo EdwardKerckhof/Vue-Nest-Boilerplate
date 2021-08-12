@@ -77,6 +77,12 @@ export class UsersController {
     }
   }
 
+  @Get('user')
+  @ApiOkResponse({ type: UserDto })
+  getSignedInUser(@Req() req: RequestModel): UserDto {
+    return req.user
+  }
+
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
@@ -93,6 +99,13 @@ export class UsersController {
     })
   }
 
+  @Get('find-by-name')
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: UserDto, isArray: true })
+  async findAllByName(@Query('name') name: string) {
+    return this._usersService.findAllByName(name)
+  }
+
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put(':id/roles')
@@ -102,12 +115,6 @@ export class UsersController {
     @Body() roleReq: { role: UserRole }
   ): Promise<UserDto> {
     return this._usersService.addRoleToUser(userId, roleReq.role)
-  }
-
-  @Get('user')
-  @ApiOkResponse({ type: UserDto })
-  getSignedInUser(@Req() req: RequestModel): UserDto {
-    return req.user
   }
 
   @UseGuards(RefreshAuthGuard)
