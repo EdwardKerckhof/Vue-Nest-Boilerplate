@@ -2,9 +2,9 @@
 
 Yarn monorepo including:
 
-- packages/common: common variables/functions used withing other packages
-- packages/api: NestJS api with JWT (cookie-based) authentication and role-based authorization
-- packages/app: Vue 3 (Vite) TypeScript app to communicate with api
+- [packages/common](https://github.com/EdwardKerckhofZoneDev/Vue-Nest-Boilerplate/tree/main/packages/common): common variables/functions used withing other packages
+- [packages/api](https://github.com/EdwardKerckhofZoneDev/Vue-Nest-Boilerplate/tree/main/packages/api): NestJS api with JWT (cookie-based) authentication and role-based authorization
+- [packages/app](https://github.com/EdwardKerckhofZoneDev/Vue-Nest-Boilerplate/tree/main/packages/app): Vue 3 (Vite) TypeScript app to communicate with api
 
 ## Vue-Nest-Boilerplate
 
@@ -33,16 +33,26 @@ docker-compose u
 
 --- Or ---
 
-Build your image:  
-`docker build -t <<user>/project-name> <path to Dockerfile>`
+Build your image:
 
-Run your image:  
-`docker run -p 3000:3000 -p 4200:4200 -e DATABASE_URL=<your database URL> DATABASE_ADMIN_EMAIL=<admin email> JWT_SECRET=<secret> <<user>/project-name>`
+```bash
+docker build -t <<user>/project-name> <path to Dockerfile>
+```
 
-For Example:  
-`docker build -t edwardkerckhof/nest-docker-api .`  
-`docker run -p 3000:3000 -p 4200:4200 -e DATABASE_URL=db://user:password@db:PORT/database_name DATABASE_ADMIN_EMAIL=email@gmail.com JWT_SECRET=mysupersecret edwardkerckhof/nest-docker-api`
+Run your image:
 
---- Or if you don't have docker ---
+```bash
+docker run -p 3000:3000 -p 4200:4200 -e DATABASE_URL=<your database URL> DATABASE_ADMIN_EMAIL=<admin email> JWT_SECRET=<secret> <<user>/project-name>
+```
+
+For Example:
+
+```bash
+docker build -t edwardkerckhof/nest-docker-api .
+
+docker run -p 3000:3000 -p 4200:4200 -e DATABASE_URL=db://user:password@db:PORT/database_name DATABASE_ADMIN_EMAIL=email@gmail.com JWT_SECRET=mysupersecret edwardkerckhof/nest-docker-api
+```
+
+--- Without using Docker ---
 
 Have a postgres database running, fill in the environment variables in your .env files and run each package separately.
