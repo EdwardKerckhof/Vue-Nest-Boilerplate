@@ -25,11 +25,11 @@ services:
     working_dir: /usr/src/bp/packages/api
     # run in dev mode: yarn start:dev
     # run in debug mode: yarn start:debug --> start vscode debugger first!
-    command: yarn start:dev
+    command: yarn start:debug
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:5432/${DATABASE_NAME}
+      DATABASE_URL: ${DATABASE_URL}
       DATABASE_ADMIN_EMAIL: ${DATABASE_ADMIN_EMAIL}
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: development
