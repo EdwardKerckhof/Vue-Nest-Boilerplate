@@ -26,11 +26,6 @@
 
 [Nest](https://github.com/nestjs/nest) Docker NestJS boilerplate api with user authentication and authorization
 
-## TODO
-
-- [ ] Improve Swagger documentation
-- [ ] Generate cookie with JWT
-
 ## Installation
 
 ```bash
@@ -46,31 +41,20 @@ npm install
 - NestJS
 - Docker
 
-### Start Commands for docker-compose file
+### Start Commands
 
-Before running any docker commands be sure to create a .env file at the root of your directory containing all the keys from `.env.example`
+Before running any docker commands make sure you create a .env file at the root of your directory containing all the keys from `.env.example`
 
 Information:
 
 - Database can be accesses via PG-Admin at the URL `http://localhost:5050`
 - API can be accesses at the URL `http://localhost:3000/api`
 
-### Start Commands for Docker
+### Run
 
-Using docker-compose:
-run `docker-compose up`
-
---- Or ---
-
-Build your image:  
-`docker build -t <<user>/project-name> <path to Dockerfile>`
-
-Run your image:  
-`docker run -p 3000:3000 -e DATABASE_URL=<your database URL> DATABASE_ADMIN_EMAIL=<admin email> JWT_SECRET=<secret> <<user>/project-name>`
-
-For Example:  
-`docker build -t edwardkerckhof/nest-docker-api .`  
-`docker run -p 3000:3000 -e DATABASE_URL=db://user:password@db:PORT/database_name DATABASE_ADMIN_EMAIL=email@gmail.com JWT_SECRET=mysupersecret edwardkerckhof/nest-docker-api`
+```bash
+npm run start:dev
+```
 
 ## Test
 

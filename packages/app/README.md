@@ -16,7 +16,6 @@ Uses:
 
 ## TODO
 
-- [x] Add login/register pages
 - [ ] Add form validation
 
 ## Recommended IDE Setup
