@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { TypeOrmModule } from '@nestjs/typeorm'
 import { AuthModule } from '../auth/auth.module'
 import { UsersModule } from '../users/users.module'
+import { DatabaseModule } from '../db/database.module'
 import Joi from '@hapi/joi'
 
 @Module({
@@ -18,12 +18,7 @@ import Joi from '@hapi/joi'
         PORT: Joi.number()
       })
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      autoLoadEntities: true,
-      synchronize: true
-    }),
+    DatabaseModule,
     AuthModule,
     UsersModule
   ]
