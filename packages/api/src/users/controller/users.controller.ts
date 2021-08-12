@@ -14,7 +14,9 @@ import {
   Query,
   CacheInterceptor,
   ClassSerializerInterceptor,
-  UseInterceptors
+  UseInterceptors,
+  CacheKey,
+  CacheTTL
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { RefreshAuthGuard } from '../../auth/guards/refresh-auth.guard'
@@ -27,6 +29,7 @@ import {
   ValidateUserDto,
   UserRole
 } from '@vnbp/common/dist/models'
+import { GET_USERS_CACHE_KEY } from '@vnbp/common/dist/constants'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
 import { Pagination } from 'nestjs-typeorm-paginate'
@@ -89,6 +92,8 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UseInterceptors(CacheInterceptor)
+  @CacheKey(GET_USERS_CACHE_KEY)
+  @CacheTTL(120)
   @Get()
   @ApiOkResponse({ type: UserDto, isArray: true })
   getAll(

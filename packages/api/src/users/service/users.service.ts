@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import {
   RegisterUserDto,
@@ -7,6 +13,7 @@ import {
   UserRole,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
+import { GET_USERS_CACHE_KEY } from '@vnbp/common/dist/constants'
 import { MoreThanOrEqual, Repository, Like } from 'typeorm'
 import { AuthService } from '../../auth/service/auth.service'
 import { User } from '../models/users.entity'
@@ -15,14 +22,29 @@ import {
   paginate,
   Pagination
 } from 'nestjs-typeorm-paginate'
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly _usersRepository: Repository<User>,
-    private readonly _authService: AuthService
+    private readonly _authService: AuthService,
+    @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache
   ) {}
+
+  async clearCache() {
+    const store = this._cacheManager.store
+    let keys: string[] = []
+    if (store.keys) {
+      keys = await store.keys()
+    }
+    keys.forEach((key) => {
+      if (key.startsWith(GET_USERS_CACHE_KEY)) {
+        this._cacheManager.del(key)
+      }
+    })
+  }
 
   async register(registerDto: RegisterUserDto): Promise<ValidationResponse> {
     try {
@@ -43,6 +65,8 @@ export class UsersService {
 
       const userDto = user.toDTO()
       const { accessToken, refreshToken } = await this.createNewTokens(userDto)
+      await this.clearCache()
+
       return {
         accessToken,
         refreshToken,
@@ -70,6 +94,8 @@ export class UsersService {
 
       const userDto = user.toDTO()
       const { accessToken, refreshToken } = await this.createNewTokens(userDto)
+      await this.clearCache()
+
       return {
         accessToken,
         refreshToken,
@@ -153,6 +179,8 @@ export class UsersService {
         user.roles = [...user.roles, role]
         await this._usersRepository.save({ ...user })
       }
+      await this.clearCache()
+
       return user.toDTO()
     } catch (error) {
       throw new HttpException(
