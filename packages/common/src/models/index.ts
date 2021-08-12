@@ -18,7 +18,7 @@ export class UserDto {
   ) {}
 }
 
-export class UserResponse {
+export class ValidationResponse {
   accessToken!: string
   refreshToken!: string
   refreshTokenExp!: string

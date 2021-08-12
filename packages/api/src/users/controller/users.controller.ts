@@ -10,14 +10,15 @@ import {
   Req,
   HttpCode,
   Put,
-  Param
+  Param,
+  Query
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { RefreshAuthGuard } from '../../auth/guards/refresh-auth.guard'
 import {
   RegisterUserDto,
   UserDto,
-  UserResponse,
+  ValidationResponse,
   UserResponseDto,
   CookieData,
   ValidateUserDto,
@@ -25,6 +26,8 @@ import {
 } from '@vnbp/common/dist/models'
 import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
+import { Pagination } from 'nestjs-typeorm-paginate'
+import { User } from '../models/users.entity'
 
 @Controller('users')
 export class UsersController {
@@ -34,7 +37,7 @@ export class UsersController {
   async register(
     @Body() registerDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponse> {
+  ): Promise<ValidationResponse> {
     const data = await this._usersService.register(registerDto)
     this.setCookie(data.accessToken, data.refreshToken, res)
     return data
@@ -45,7 +48,7 @@ export class UsersController {
   async signIn(
     @Body() validateUser: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponse> {
+  ): Promise<ValidationResponse> {
     const data = await this._usersService.signIn(validateUser)
     this.setCookie(data.accessToken, data.refreshToken, res)
     return data
@@ -65,8 +68,16 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  getAll(): Promise<UserDto[]> {
-    return this._usersService.getAllUsers()
+  getAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10
+  ): Promise<Pagination<User>> {
+    limit = limit > 100 ? 100 : limit
+    return this._usersService.getAllUsers({
+      page,
+      limit,
+      route: '/users'
+    })
   }
 
   @Roles(UserRole.ADMIN)

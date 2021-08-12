@@ -4,13 +4,18 @@ import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import {
   RegisterUserDto,
   UserDto,
-  UserResponse,
+  ValidationResponse,
   UserRole,
   ValidateUserDto
 } from '@vnbp/common/dist/models'
 import { MoreThanOrEqual, Repository } from 'typeorm'
 import { AuthService } from '../../auth/service/auth.service'
 import { User } from '../models/users.entity'
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination
+} from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class UsersService {
@@ -20,7 +25,7 @@ export class UsersService {
     private readonly _authService: AuthService
   ) {}
 
-  async register(registerDto: RegisterUserDto): Promise<UserResponse> {
+  async register(registerDto: RegisterUserDto): Promise<ValidationResponse> {
     try {
       const mailExists = await this.mailExists(registerDto.email)
       if (mailExists)
@@ -52,7 +57,7 @@ export class UsersService {
     }
   }
 
-  async signIn(validateDto: ValidateUserDto): Promise<UserResponse> {
+  async signIn(validateDto: ValidateUserDto): Promise<ValidationResponse> {
     const user = await this.getUserByEmail(validateDto.email)
 
     try {
@@ -81,14 +86,38 @@ export class UsersService {
     }
   }
 
-  async getAllUsers(): Promise<UserDto[]> {
+  async getAllUsers(options: IPaginationOptions): Promise<Pagination<User>> {
     try {
-      const users = await this._usersRepository.find()
-      return users.map((user) => user.toDTO())
+      return await paginate<User>(this._usersRepository, options)
     } catch (error) {
       throw new HttpException(
         `something went wrong ${error}`,
         HttpStatus.INTERNAL_SERVER_ERROR
+      )
+    }
+  }
+
+  private async getUserByEmail(email: string): Promise<User> {
+    try {
+      // include password because it is excluded by default
+      // see users.entity.ts
+      return await this._usersRepository.findOneOrFail(
+        { email },
+        {
+          select: [
+            'id',
+            'email',
+            'firstName',
+            'lastName',
+            'refreshTokenExp',
+            'password'
+          ]
+        }
+      )
+    } catch (error) {
+      throw new HttpException(
+        `user with email: ${email}, not found`,
+        HttpStatus.NOT_FOUND
       )
     }
   }
@@ -119,31 +148,6 @@ export class UsersService {
     }
   }
 
-  private async getUserByEmail(email: string): Promise<User> {
-    try {
-      // include password because it is excluded by default
-      // see users.entity.ts
-      return await this._usersRepository.findOneOrFail(
-        { email },
-        {
-          select: [
-            'id',
-            'email',
-            'firstName',
-            'lastName',
-            'refreshTokenExp',
-            'password'
-          ]
-        }
-      )
-    } catch (error) {
-      throw new HttpException(
-        `user with email: ${email}, not found`,
-        HttpStatus.NOT_FOUND
-      )
-    }
-  }
-
   // validates passwords using bcrypt
   private validatePassword(
     password: string,
@@ -165,7 +169,7 @@ export class UsersService {
   }
 
   // creates a new accessToken and refreshToken for the given user
-  async createNewTokens(userDto: UserDto): Promise<UserResponse> {
+  async createNewTokens(userDto: UserDto): Promise<ValidationResponse> {
     try {
       const user = await this.getUserById(userDto.id)
       const accessToken = await this.generateJwt(user)
