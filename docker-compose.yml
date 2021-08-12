@@ -9,6 +9,7 @@ services:
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
       - ./packages/common:/usr/src/bp/packages/common
+      - /usr/src/bp/packages/common/node_modules
     working_dir: /usr/src/bp/packages/common
     command: yarn build:watch
 
@@ -22,6 +23,7 @@ services:
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
       - ./packages/api:/usr/src/bp/packages/api
+      - /usr/src/bp/packages/api/node_modules
     working_dir: /usr/src/bp/packages/api
     # run in dev mode: yarn start:dev
     # run in debug mode: yarn start:debug --> start vscode debugger first!
@@ -37,6 +39,8 @@ services:
     ports:
       - 3000:3000 # api development port
       - 9229:9229 # api debugging port
+    links:
+      - common
 
   app:
     # image: edwardkerckhof/nest-bp-app
@@ -48,6 +52,7 @@ services:
     # mount host directory to docker container, this is done to reflect file changes from host to container
     volumes:
       - ./packages/app:/usr/src/bp/packages/app
+      - /usr/src/bp/packages/app/node_modules
     working_dir: /usr/src/bp/packages/app
     # run in dev mode: yarn dev
     command: yarn dev
@@ -59,6 +64,7 @@ services:
       - 4200:4200 # app development port
     links:
       - api
+      - common
 
   postgres:
     image: postgres:13
