@@ -11,6 +11,11 @@ import {
 import { MoreThanOrEqual, Repository } from 'typeorm'
 import { AuthService } from '../../auth/service/auth.service'
 import { User } from '../models/users.entity'
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination
+} from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class UsersService {
@@ -81,10 +86,9 @@ export class UsersService {
     }
   }
 
-  async getAllUsers(): Promise<UserDto[]> {
+  async getAllUsers(options: IPaginationOptions): Promise<Pagination<User>> {
     try {
-      const users = await this._usersRepository.find()
-      return users.map((user) => user.toDTO())
+      return await paginate<User>(this._usersRepository, options)
     } catch (error) {
       throw new HttpException(
         `something went wrong ${error}`,
