@@ -28,6 +28,7 @@ import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
 import { Pagination } from 'nestjs-typeorm-paginate'
 import { User } from '../models/users.entity'
+import { RequestModel } from 'middleware/auth.middleware'
 
 @Controller('users')
 export class UsersController {
@@ -66,7 +67,7 @@ export class UsersController {
   }
 
   @Roles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Get()
   getAll(
     @Query('page') page = 1,
@@ -81,7 +82,7 @@ export class UsersController {
   }
 
   @Roles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Put(':id/roles')
   addRole(
     @Param('id') userId: number,
@@ -91,10 +92,8 @@ export class UsersController {
   }
 
   @Get('user')
-  getSignedInUser(@Req() req: Request): Promise<UserDto> {
-    const cookieData: CookieData =
-      req?.cookies[process.env.COOKIE_NAME || 'bp_jwt']
-    return this._usersService.verifyJwt(cookieData.token)
+  getSignedInUser(@Req() req: RequestModel): UserDto {
+    return req.user
   }
 
   @UseGuards(RefreshAuthGuard)
