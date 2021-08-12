@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { EXPIRE_TIME, TOKEN_TYPE } from '@vnbp/common/dist/constants'
 import {
   RegisterUserDto,
   UserDto,
@@ -48,8 +47,6 @@ export class UsersService {
         accessToken,
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
         roles: user.roles
       }
     } catch (error) {
@@ -77,8 +74,6 @@ export class UsersService {
         accessToken,
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
         roles: user.roles
       }
     } catch (error) {
@@ -178,8 +173,6 @@ export class UsersService {
         accessToken,
         refreshToken,
         refreshTokenExp: user.refreshTokenExp,
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
         roles: user.roles
       }
     } catch (error) {
