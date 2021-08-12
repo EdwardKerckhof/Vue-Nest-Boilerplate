@@ -22,7 +22,7 @@ COPY packages/app/yarn.lock ./packages/app/
 RUN yarn install
 
 # copy all other files
-COPY . .
+# COPY . .
 
 ##########
 ## PROD ##
