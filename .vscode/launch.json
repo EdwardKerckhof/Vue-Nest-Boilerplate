@@ -6,12 +6,17 @@
       "request": "attach",
       "name": "Debug: BP API",
       "remoteRoot": "/usr/src/bp/packages/api",
-      "localRoot": "${workspaceFolder}",
+      "localRoot": "${workspaceFolder}/packages/api",
       "protocol": "inspector",
       "port": 9229,
       "restart": true,
       "address": "0.0.0.0",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules",
+        "packages/app",
+        "packages/common"
+      ]
     }
   ]
 }
