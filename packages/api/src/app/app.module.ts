@@ -1,7 +1,6 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { AuthMiddleware } from 'middleware/auth.middleware'
 import { AuthModule } from '../auth/auth.module'
 import { UsersModule } from '../users/users.module'
 
@@ -18,20 +17,4 @@ import { UsersModule } from '../users/users.module'
     UsersModule
   ]
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .exclude(
-        {
-          path: '/users',
-          method: RequestMethod.POST
-        },
-        {
-          path: '/users/signin',
-          method: RequestMethod.POST
-        }
-      )
-      .forRoutes('')
-  }
-}
+export class AppModule {}

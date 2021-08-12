@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 
 export enum UserRole {
@@ -19,9 +20,28 @@ export class UserDto {
 }
 
 export class ValidationResponse {
+  @ApiProperty({
+    type: 'string',
+    description: 'JWT'
+  })
   accessToken!: string
+
+  @ApiProperty({
+    type: 'string',
+    description: 'refresh token'
+  })
   refreshToken!: string
+
+  @ApiProperty({
+    type: 'string',
+    description: 'refresh token expiration date'
+  })
   refreshTokenExp!: string
+
+  @ApiProperty({
+    type: 'string',
+    description: 'user roles'
+  })
   roles!: UserRole[]
 }
 
@@ -50,16 +70,32 @@ export class UserRequestDto {
 
 export class ValidateUserDto {
   @IsEmail()
+  @ApiProperty({
+    description: 'users email address',
+    type: 'string'
+  })
   email!: string
 
   @IsNotEmpty()
+  @ApiProperty({
+    description: 'users password',
+    type: 'string'
+  })
   password!: string
 }
 
 export class RegisterUserDto extends ValidateUserDto {
   @IsNotEmpty()
+  @ApiProperty({
+    description: 'users first name',
+    type: 'string'
+  })
   firstName!: string
 
   @IsNotEmpty()
+  @ApiProperty({
+    description: 'Users last name',
+    type: 'string'
+  })
   lastName!: string
 }

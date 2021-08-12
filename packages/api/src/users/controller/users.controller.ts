@@ -28,12 +28,16 @@ import { UsersService } from '../service/users.service'
 import { Request, Response } from 'express'
 import { Pagination } from 'nestjs-typeorm-paginate'
 import { User } from '../models/users.entity'
-import { RequestModel } from 'middleware/auth.middleware'
+
+interface RequestModel extends Request {
+  user: UserDto
+}
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async register(
     @Body() registerDto: RegisterUserDto,
@@ -44,6 +48,7 @@ export class UsersController {
     return data
   }
 
+  @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @Post('signin')
   async signIn(
@@ -67,7 +72,7 @@ export class UsersController {
   }
 
   @Roles(UserRole.ADMIN)
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   getAll(
     @Query('page') page = 1,
@@ -82,7 +87,7 @@ export class UsersController {
   }
 
   @Roles(UserRole.ADMIN)
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Put(':id/roles')
   addRole(
     @Param('id') userId: number,
