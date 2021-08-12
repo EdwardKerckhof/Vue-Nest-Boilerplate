@@ -39,7 +39,6 @@ interface RequestModel extends Request {
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiCreatedResponse({ type: ValidationResponse })
   async register(
@@ -51,7 +50,6 @@ export class UsersController {
     return data
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('signin')
   @HttpCode(200)
   @ApiOkResponse({ type: ValidationResponse })
