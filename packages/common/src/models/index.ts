@@ -22,9 +22,7 @@ export class ValidationResponse {
   accessToken!: string
   refreshToken!: string
   refreshTokenExp!: string
-  tokenType!: string
   roles!: UserRole[]
-  expiresIn!: number
 }
 
 export class CookieData {

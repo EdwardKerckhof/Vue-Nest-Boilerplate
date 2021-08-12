@@ -48,8 +48,6 @@ export class UsersService {
         accessToken,
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
         roles: user.roles
       }
     } catch (error) {
@@ -77,8 +75,6 @@ export class UsersService {
         accessToken,
         refreshToken,
         refreshTokenExp: user.refreshTokenExp || '',
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
         roles: user.roles
       }
     } catch (error) {
@@ -178,8 +174,6 @@ export class UsersService {
         accessToken,
         refreshToken,
         refreshTokenExp: user.refreshTokenExp,
-        tokenType: TOKEN_TYPE,
-        expiresIn: EXPIRE_TIME,
         roles: user.roles
       }
     } catch (error) {
