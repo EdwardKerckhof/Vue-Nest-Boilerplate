@@ -18,7 +18,7 @@ import { RefreshAuthGuard } from '../../auth/guards/refresh-auth.guard'
 import {
   RegisterUserDto,
   UserDto,
-  UserResponse,
+  ValidationResponse,
   UserResponseDto,
   CookieData,
   ValidateUserDto,
@@ -37,7 +37,7 @@ export class UsersController {
   async register(
     @Body() registerDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponse> {
+  ): Promise<ValidationResponse> {
     const data = await this._usersService.register(registerDto)
     this.setCookie(data.accessToken, data.refreshToken, res)
     return data
@@ -48,7 +48,7 @@ export class UsersController {
   async signIn(
     @Body() validateUser: ValidateUserDto,
     @Res({ passthrough: true }) res: Response
-  ): Promise<UserResponse> {
+  ): Promise<ValidationResponse> {
     const data = await this._usersService.signIn(validateUser)
     this.setCookie(data.accessToken, data.refreshToken, res)
     return data
