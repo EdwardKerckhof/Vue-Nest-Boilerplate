@@ -11,7 +11,10 @@ import {
   HttpCode,
   Put,
   Param,
-  Query
+  Query,
+  CacheInterceptor,
+  ClassSerializerInterceptor,
+  UseInterceptors
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { RefreshAuthGuard } from '../../auth/guards/refresh-auth.guard'
@@ -35,6 +38,7 @@ interface RequestModel extends Request {
 }
 
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('Users')
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
@@ -75,6 +79,7 @@ export class UsersController {
     }
   }
 
+  @UseInterceptors(CacheInterceptor)
   @Get('user')
   @ApiOkResponse({ type: UserDto })
   getSignedInUser(@Req() req: RequestModel): UserDto {
@@ -83,6 +88,7 @@ export class UsersController {
 
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseInterceptors(CacheInterceptor)
   @Get()
   @ApiOkResponse({ type: UserDto, isArray: true })
   getAll(
@@ -97,8 +103,9 @@ export class UsersController {
     })
   }
 
-  @Get('find-by-name')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(CacheInterceptor)
+  @Get('find-by-name')
   @ApiOkResponse({ type: UserDto, isArray: true })
   async findAllByName(@Query('name') name: string) {
     return this._usersService.findAllByName(name)
