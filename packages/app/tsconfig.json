@@ -5,6 +5,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "preserve",
+    "experimentalDecorators": true,
     "lib": ["ESNext", "dom"],
     "types": ["node"],
     "baseUrl": "/",
