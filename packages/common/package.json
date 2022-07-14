@@ -16,6 +16,6 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@nestjs/swagger": "^5.0.9"
+    "@nestjs/swagger": "^6.0.4"
   }
 }
